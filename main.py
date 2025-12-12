@@ -14,6 +14,9 @@ from tools.csv_converter import CSVConverterTool
 from tools.csv_transformer import CSVTransformerTool
 from tools.csv_splitter import CSVSplitterTool
 from tools.xml_parser import XMLParserTool
+from tools.excel_to_csv import ExcelToCSVTool
+from tools.column_cleaner import ColumnCleanerTool
+from tools.txt_parser import TxtParserTool
 from tools.profile_manager import ProfileManager
 
 class CSVToolBox(ctk.CTk):
@@ -111,6 +114,9 @@ class CSVToolBox(ctk.CTk):
             ("🔄 Converter Formato", "converter"),
             ("⚙️ Transformar Dados", "transformer"),
             ("📄 XML para CSV", "xml_parser"),
+            ("📑 Excel para CSV", "excel_to_csv"),
+            ("🔤 Limpar Colunas", "column_cleaner"),
+            ("📝 TXT para CSV", "txt_parser"),
         ]
         
         for text, tool_id in tools:
@@ -214,6 +220,9 @@ class CSVToolBox(ctk.CTk):
             ("🔄", "Converter", "Converta entre CSV, XLSX, XML e outros formatos"),
             ("⚙️", "Transformar", "Substitua valores, filtre colunas e transforme dados"),
             ("📄", "XML para CSV", "Converta arquivos XML para CSV com parsing inteligente"),
+            ("📑", "Excel para CSV", "Converta planilhas Excel com normalização de headers"),
+            ("🔤", "Limpar Colunas", "Remova acentos e normalize texto de colunas"),
+            ("📝", "TXT para CSV", "Converta arquivos TXT delimitados ou largura fixa"),
         ]
         
         for i, (icon, title, desc) in enumerate(features):
@@ -261,6 +270,12 @@ class CSVToolBox(ctk.CTk):
                 self.tool_frames[tool_id] = CSVTransformerTool(self.content_frame, self.profile_manager)
             elif tool_id == "xml_parser":
                 self.tool_frames[tool_id] = XMLParserTool(self.content_frame, self.profile_manager)
+            elif tool_id == "excel_to_csv":
+                self.tool_frames[tool_id] = ExcelToCSVTool(self.content_frame, self.profile_manager)
+            elif tool_id == "column_cleaner":
+                self.tool_frames[tool_id] = ColumnCleanerTool(self.content_frame, self.profile_manager)
+            elif tool_id == "txt_parser":
+                self.tool_frames[tool_id] = TxtParserTool(self.content_frame, self.profile_manager)
         
         # Mostrar frame da ferramenta
         self.tool_frames[tool_id].pack(fill="both", expand=True)

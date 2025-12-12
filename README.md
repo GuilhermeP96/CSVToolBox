@@ -51,6 +51,38 @@ Converta entre formatos:
 - Modos de parsing: auto, flat, nested
 - Opções de quoting (QUOTE_ALL, QUOTE_MINIMAL, etc.)
 
+### 📑 Excel para CSV
+- Converta planilhas Excel (XLSX, XLS, XLSB)
+- Seleção de sheets específicas
+- Filtro de colunas a exportar
+- Normalização de headers:
+  - Converter para MAIÚSCULAS
+  - Remover acentos
+  - Substituir espaços por underscore
+  - Mapeamento customizado de nomes
+- Remover linhas vazias
+- Configurar separador decimal (ponto ou vírgula)
+
+### 🔤 Limpar Colunas
+- Limpeza avançada de texto em colunas específicas
+- Converter para MAIÚSCULAS
+- Remover acentos (unidecode)
+- Trim de espaços nas extremidades
+- Colapsar espaços múltiplos
+- Remover caracteres especiais
+- Correção de cedilha (Ç → C)
+- Sobrescrever ou criar nova coluna
+
+### 📝 TXT para CSV
+- Converta arquivos TXT para CSV
+- Suporte a múltiplos formatos:
+  - Delimitado (|, ;, Tab, espaço, customizado)
+  - Largura fixa (posições configuráveis)
+  - Regex (padrões de captura)
+- Definir nomes de colunas manualmente
+- Pular linhas iniciais/comentários
+- Ignorar linhas vazias
+
 ## 💾 Sistema de Perfis
 
 Salve configurações de processos recorrentes para reutilização rápida:
@@ -118,7 +150,10 @@ CSVToolBox/
     ├── csv_cleaner.py         # Ferramenta de limpeza
     ├── csv_converter.py       # Ferramenta de conversão
     ├── csv_transformer.py     # Ferramenta de transformação
-    └── xml_parser.py          # Ferramenta XML para CSV
+    ├── xml_parser.py          # Ferramenta XML para CSV
+    ├── excel_to_csv.py        # Ferramenta Excel para CSV
+    ├── column_cleaner.py      # Ferramenta limpeza de colunas
+    └── txt_parser.py          # Ferramenta TXT para CSV
 ```
 
 ## 🔧 Configurações
