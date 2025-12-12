@@ -1,0 +1,27 @@
+{
+    "company_name": "Guilherme Pinheiro",
+    "file_description": "CSVToolBox - CSV Toolkit / Caixa de Ferramentas CSV",
+    "file_version": "1.0.0.0",
+    "internal_name": "CSVToolBox",
+    "legal_copyright": "©2025 Guilherme Pinheiro - MIT License",
+    "original_filename": "CSVToolBox.exe",
+    "product_name": "CSVToolBox",
+    "product_version": "1.0.0.0",
+    "sign_tool_path": "C:\\Program Files (x86)\\Windows Kits\\10\\bin\\10.0.19041.0\\x64\\signtool.exe",
+    "timestamp_url": "http://timestamp.digicert.com",
+    "sha_type": "SHA256",
+    "hiddenimports": [
+        "customtkinter",
+        "pandas",
+        "openpyxl",
+        "xlrd",
+        "pyxlsb",
+        "chardet",
+        "PIL",
+        "PIL._tkinter_finder"
+    ],
+    "datas": [
+        ["i18n.py", "."],
+        ["tools", "tools"]
+    ]
+}

@@ -1,11 +1,17 @@
 # CSVToolBox
 
+<p align="center">
+  <img src="img/logo.png" alt="CSVToolBox Logo" width="150">
+</p>
+
 🇺🇸 **English** | [🇧🇷 Português](#português)
 
 A toolkit for processing CSV, Excel and other tabular formats. Built to automate repetitive data manipulation tasks.
 
-![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)
+![Python](https://img.shields.io/badge/Python-3.13+-blue.svg)
 ![License](https://img.shields.io/badge/License-MIT-green.svg)
+![Platform](https://img.shields.io/badge/Platform-Windows-lightgrey.svg)
+[![GitHub](https://img.shields.io/badge/GitHub-GuilhermeP96-black.svg)](https://github.com/GuilhermeP96/CSVToolBox)
 
 ## About
 
@@ -13,10 +19,18 @@ CSVToolBox was born from the need to consolidate various Python scripts I used d
 
 Works with both graphical interface (GUI) and command line (CLI). **Automatically detects system language** (English/Portuguese).
 
-## Installation
+## Download
+
+### Standalone Executable (Recommended)
+Download the latest `CSVToolBox.exe` from the [Releases](https://github.com/GuilhermeP96/CSVToolBox/releases) page.
+- No Python installation required
+- All dependencies included
+- Just download and run!
+
+### From Source
 
 ```bash
-git clone https://github.com/your-user/CSVToolBox.git
+git clone https://github.com/GuilhermeP96/CSVToolBox.git
 cd CSVToolBox
 pip install -r requirements.txt
 ```
@@ -25,39 +39,42 @@ pip install -r requirements.txt
 
 ### Graphical Interface
 
+**Executable:**
+```bash
+CSVToolBox.exe
+```
+
+**From source:**
 ```bash
 python main.py
 ```
 
 ### Command Line
 
+**Executable:**
 ```bash
 # Show help
-python cli.py --help
+CSVToolBox.exe --help
 
 # Merge multiple CSVs
-python cli.py merge file1.csv file2.csv -o merged.csv
+CSVToolBox.exe merge file1.csv file2.csv -o merged.csv
 
 # Split large file
-python cli.py split large_file.csv -r 50000
+CSVToolBox.exe split large_file.csv -l 50000
 
 # Clean data
-python cli.py clean data.csv --trim --uppercase -o clean_data.csv
+CSVToolBox.exe clean data.csv --remove-duplicates --remove-empty
 
 # Convert Excel to CSV
-python cli.py convert spreadsheet.xlsx -o data.csv
+CSVToolBox.exe excel spreadsheet.xlsx -o data.csv
 
-# Apply lookup table
-python cli.py transform data.csv -c STATE --depara states.csv
+# Convert XML to CSV
+CSVToolBox.exe xml data.xml -o output.csv
+```
 
-# Show file info
-python cli.py info data.csv --sample 10
-
-# List saved profiles
-python cli.py profiles
-
-# View process history
-python cli.py history
+**From source:**
+```bash
+python cli.py --help
 ```
 
 ## Available Tools
@@ -137,10 +154,18 @@ O CSVToolBox nasceu da necessidade de consolidar vários scripts Python que eu u
 
 Funciona tanto com interface gráfica (GUI) quanto por linha de comando (CLI). **Detecta automaticamente o idioma do sistema** (Inglês/Português).
 
-## Instalação
+## Download
+
+### Executável Standalone (Recomendado)
+Baixe o `CSVToolBox.exe` mais recente na página de [Releases](https://github.com/GuilhermeP96/CSVToolBox/releases).
+- Não precisa instalar Python
+- Todas as dependências incluídas
+- Basta baixar e executar!
+
+### Código Fonte
 
 ```bash
-git clone https://github.com/seu-usuario/CSVToolBox.git
+git clone https://github.com/GuilhermeP96/CSVToolBox.git
 cd CSVToolBox
 pip install -r requirements.txt
 ```
@@ -149,39 +174,42 @@ pip install -r requirements.txt
 
 ### Interface Gráfica
 
+**Executável:**
+```bash
+CSVToolBox.exe
+```
+
+**Código fonte:**
 ```bash
 python main.py
 ```
 
 ### Linha de Comando
 
+**Executável:**
 ```bash
 # Ver ajuda
-python cli.py --help
+CSVToolBox.exe --help
 
 # Consolidar vários CSVs
-python cli.py merge arquivo1.csv arquivo2.csv -o consolidado.csv
+CSVToolBox.exe merge arquivo1.csv arquivo2.csv -o consolidado.csv
 
 # Dividir arquivo grande
-python cli.py split arquivo_grande.csv -r 50000
+CSVToolBox.exe split arquivo_grande.csv -l 50000
 
 # Limpar dados
-python cli.py clean dados.csv --trim --uppercase -o dados_limpos.csv
+CSVToolBox.exe clean dados.csv --remove-duplicates --remove-empty
 
 # Converter Excel para CSV
-python cli.py convert planilha.xlsx -o dados.csv
+CSVToolBox.exe excel planilha.xlsx -o dados.csv
 
-# Aplicar DE-PARA
-python cli.py transform dados.csv -c UF --depara estados.csv
+# Converter XML para CSV
+CSVToolBox.exe xml dados.xml -o saida.csv
+```
 
-# Ver informações do arquivo
-python cli.py info dados.csv --sample 10
-
-# Listar perfis salvos
-python cli.py profiles
-
-# Ver histórico de processos
-python cli.py history
+**Código fonte:**
+```bash
+python cli.py --help
 ```
 
 ## Ferramentas Disponíveis
@@ -215,4 +243,9 @@ As configurações e perfis são salvos em:
 
 ## Licença
 
-MIT
+MIT - © 2025 Guilherme Pinheiro
+
+---
+
+**Autor / Author**: Guilherme Pinheiro  
+**GitHub**: https://github.com/GuilhermeP96/CSVToolBox

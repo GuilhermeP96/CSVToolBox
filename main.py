@@ -5,8 +5,10 @@ import customtkinter as ctk
 from tkinter import filedialog, messagebox
 import json
 import os
+import sys
 from pathlib import Path
 from datetime import datetime
+from PIL import Image
 
 # Importar módulos de ferramentas
 from tools.csv_merger import CSVMergerTool
@@ -22,6 +24,14 @@ from tools.profile_manager import ProfileManager
 
 # Internationalization
 from i18n import t, get_language, set_language, TRANSLATIONS
+
+
+def get_resource_path(relative_path):
+    """Get absolute path to resource, works for dev and PyInstaller bundle"""
+    if hasattr(sys, '_MEIPASS'):
+        # Running as compiled exe
+        return os.path.join(sys._MEIPASS, relative_path)
+    return os.path.join(os.path.dirname(os.path.abspath(__file__)), relative_path)
 
 
 def get_user_data_dir():
@@ -68,6 +78,9 @@ class CSVToolBox(ctk.CTk):
         
         # Criar interface
         self.create_widgets()
+        
+        # Definir ícone da janela
+        self.set_window_icon()
         
     def load_config(self):
         """Carrega configurações do arquivo JSON"""
@@ -166,24 +179,40 @@ class CSVToolBox(ctk.CTk):
         logo_frame = ctk.CTkFrame(self.sidebar, fg_color="transparent")
         logo_frame.pack(fill="x", pady=(15, 5))
         
-        # Botão Home (clique no logo volta para tela inicial)
-        self.btn_home = ctk.CTkButton(
-            logo_frame,
-            text="🏠",
-            command=self.show_home,
-            width=40,
-            height=40,
-            fg_color="transparent",
-            hover_color="gray30",
-            font=ctk.CTkFont(size=20)
-        )
+        # Logo clicável (volta para tela inicial)
+        try:
+            logo_path = get_resource_path("img/logo.png")
+            logo_image = Image.open(logo_path)
+            self.logo_ctk = ctk.CTkImage(light_image=logo_image, dark_image=logo_image, size=(40, 40))
+            self.btn_home = ctk.CTkButton(
+                logo_frame,
+                image=self.logo_ctk,
+                text="",
+                command=self.show_home,
+                width=40,
+                height=40,
+                fg_color="transparent",
+                hover_color="gray30"
+            )
+        except Exception:
+            # Fallback se não encontrar o logo
+            self.btn_home = ctk.CTkButton(
+                logo_frame,
+                text="🏠",
+                command=self.show_home,
+                width=40,
+                height=40,
+                fg_color="transparent",
+                hover_color="gray30",
+                font=ctk.CTkFont(size=20)
+            )
         self.btn_home.pack(side="left", padx=(20, 5))
         
         # Logo/Título
         self.logo_label = ctk.CTkLabel(
             logo_frame, 
             text="CSVToolBox",
-            font=ctk.CTkFont(size=20, weight="bold")
+            font=ctk.CTkFont(size=18, weight="bold")
         )
         self.logo_label.pack(side="left", padx=5)
         
@@ -695,6 +724,22 @@ class CSVToolBox(ctk.CTk):
         
         # Close current instance
         self.destroy()
+
+    def set_window_icon(self):
+        """Set the window icon / Define o ícone da janela"""
+        try:
+            icon_path = get_resource_path("img/logo.ico")
+            if os.path.exists(icon_path):
+                self.iconbitmap(icon_path)
+            else:
+                # Try PNG with PhotoImage
+                png_path = get_resource_path("img/logo.png")
+                if os.path.exists(png_path):
+                    from tkinter import PhotoImage
+                    icon = PhotoImage(file=png_path)
+                    self.iconphoto(True, icon)
+        except Exception as e:
+            print(f"Could not set window icon: {e}")
 
 
 def main():
