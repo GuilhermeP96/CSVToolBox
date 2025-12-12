@@ -43,6 +43,14 @@ Converta entre formatos:
   - Adicionar prefixo/sufixo
   - Trim (remover espaços)
 
+### 📄 XML para CSV
+- Converta arquivos XML para CSV
+- Detecção automática de estrutura
+- Suporte a namespaces XML
+- Concatenação de valores repetidos
+- Modos de parsing: auto, flat, nested
+- Opções de quoting (QUOTE_ALL, QUOTE_MINIMAL, etc.)
+
 ## 💾 Sistema de Perfis
 
 Salve configurações de processos recorrentes para reutilização rápida:
@@ -109,7 +117,8 @@ CSVToolBox/
     ├── csv_splitter.py        # Ferramenta de divisão
     ├── csv_cleaner.py         # Ferramenta de limpeza
     ├── csv_converter.py       # Ferramenta de conversão
-    └── csv_transformer.py     # Ferramenta de transformação
+    ├── csv_transformer.py     # Ferramenta de transformação
+    └── xml_parser.py          # Ferramenta XML para CSV
 ```
 
 ## 🔧 Configurações

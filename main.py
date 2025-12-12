@@ -13,6 +13,7 @@ from tools.csv_cleaner import CSVCleanerTool
 from tools.csv_converter import CSVConverterTool
 from tools.csv_transformer import CSVTransformerTool
 from tools.csv_splitter import CSVSplitterTool
+from tools.xml_parser import XMLParserTool
 from tools.profile_manager import ProfileManager
 
 class CSVToolBox(ctk.CTk):
@@ -109,6 +110,7 @@ class CSVToolBox(ctk.CTk):
             ("🧹 Limpar CSV", "cleaner"),
             ("🔄 Converter Formato", "converter"),
             ("⚙️ Transformar Dados", "transformer"),
+            ("📄 XML para CSV", "xml_parser"),
         ]
         
         for text, tool_id in tools:
@@ -211,6 +213,7 @@ class CSVToolBox(ctk.CTk):
             ("🧹", "Limpar CSV", "Remova caracteres especiais, aspas e limpe dados"),
             ("🔄", "Converter", "Converta entre CSV, XLSX, XML e outros formatos"),
             ("⚙️", "Transformar", "Substitua valores, filtre colunas e transforme dados"),
+            ("📄", "XML para CSV", "Converta arquivos XML para CSV com parsing inteligente"),
         ]
         
         for i, (icon, title, desc) in enumerate(features):
@@ -256,6 +259,8 @@ class CSVToolBox(ctk.CTk):
                 self.tool_frames[tool_id] = CSVConverterTool(self.content_frame, self.profile_manager)
             elif tool_id == "transformer":
                 self.tool_frames[tool_id] = CSVTransformerTool(self.content_frame, self.profile_manager)
+            elif tool_id == "xml_parser":
+                self.tool_frames[tool_id] = XMLParserTool(self.content_frame, self.profile_manager)
         
         # Mostrar frame da ferramenta
         self.tool_frames[tool_id].pack(fill="both", expand=True)
