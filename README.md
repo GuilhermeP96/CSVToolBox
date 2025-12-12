@@ -10,6 +10,15 @@ Uma caixa de ferramentas completa para tratamento de arquivos CSV com interface 
 - Opção para remover linhas duplicadas
 - Detecção automática de encoding (chardet)
 
+### ✂️ Dividir CSV
+- Divida arquivos CSV grandes em partes menores
+- Configure número máximo de linhas por arquivo
+- Presets rápidos (10K, 50K, 100K, 500K, 1M)
+- Conversão de formato de dados (BR, EUA, EU, UK)
+- Charset e separador diferentes para origem e destino
+- Opção de aspas em todos os campos
+- Log de processo em tempo real
+
 ### 🧹 Limpar CSV
 - Remover aspas (simples e duplas)
 - Remover espaços extras
@@ -97,6 +106,7 @@ CSVToolBox/
     ├── __init__.py
     ├── profile_manager.py     # Gerenciador de perfis
     ├── csv_merger.py          # Ferramenta de consolidação
+    ├── csv_splitter.py        # Ferramenta de divisão
     ├── csv_cleaner.py         # Ferramenta de limpeza
     ├── csv_converter.py       # Ferramenta de conversão
     └── csv_transformer.py     # Ferramenta de transformação

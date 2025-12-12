@@ -12,6 +12,7 @@ from tools.csv_merger import CSVMergerTool
 from tools.csv_cleaner import CSVCleanerTool
 from tools.csv_converter import CSVConverterTool
 from tools.csv_transformer import CSVTransformerTool
+from tools.csv_splitter import CSVSplitterTool
 from tools.profile_manager import ProfileManager
 
 class CSVToolBox(ctk.CTk):
@@ -104,6 +105,7 @@ class CSVToolBox(ctk.CTk):
         self.tool_buttons = {}
         tools = [
             ("📊 Consolidar CSVs", "merger"),
+            ("✂️ Dividir CSV", "splitter"),
             ("🧹 Limpar CSV", "cleaner"),
             ("🔄 Converter Formato", "converter"),
             ("⚙️ Transformar Dados", "transformer"),
@@ -205,14 +207,15 @@ class CSVToolBox(ctk.CTk):
         
         features = [
             ("📊", "Consolidar CSVs", "Mescle múltiplos arquivos CSV em um único arquivo"),
+            ("✂️", "Dividir CSV", "Divida arquivos grandes em partes menores"),
             ("🧹", "Limpar CSV", "Remova caracteres especiais, aspas e limpe dados"),
             ("🔄", "Converter", "Converta entre CSV, XLSX, XML e outros formatos"),
             ("⚙️", "Transformar", "Substitua valores, filtre colunas e transforme dados"),
         ]
         
         for i, (icon, title, desc) in enumerate(features):
-            card = ctk.CTkFrame(cards_frame, width=250, height=150)
-            card.grid(row=i//2, column=i%2, padx=15, pady=15)
+            card = ctk.CTkFrame(cards_frame, width=220, height=140)
+            card.grid(row=i//3, column=i%3, padx=10, pady=10)
             card.grid_propagate(False)
             
             icon_label = ctk.CTkLabel(card, text=icon, font=ctk.CTkFont(size=40))
@@ -245,6 +248,8 @@ class CSVToolBox(ctk.CTk):
         if tool_id not in self.tool_frames:
             if tool_id == "merger":
                 self.tool_frames[tool_id] = CSVMergerTool(self.content_frame, self.profile_manager)
+            elif tool_id == "splitter":
+                self.tool_frames[tool_id] = CSVSplitterTool(self.content_frame, self.profile_manager)
             elif tool_id == "cleaner":
                 self.tool_frames[tool_id] = CSVCleanerTool(self.content_frame, self.profile_manager)
             elif tool_id == "converter":
