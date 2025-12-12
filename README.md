@@ -1,191 +1,218 @@
 # CSVToolBox
 
-Uma caixa de ferramentas completa para tratamento de arquivos CSV com interface gráfica moderna.
+🇺🇸 **English** | [🇧🇷 Português](#português)
 
-## 📋 Funcionalidades
+A toolkit for processing CSV, Excel and other tabular formats. Built to automate repetitive data manipulation tasks.
 
-### 📊 Consolidar CSVs
-- Mescle múltiplos arquivos CSV em um único arquivo
-- Suporte a diferentes encodings e separadores
-- Opção para remover linhas duplicadas
-- Detecção automática de encoding (chardet)
+![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)
+![License](https://img.shields.io/badge/License-MIT-green.svg)
 
-### ✂️ Dividir CSV
-- Divida arquivos CSV grandes em partes menores
-- Configure número máximo de linhas por arquivo
-- Presets rápidos (10K, 50K, 100K, 500K, 1M)
-- Conversão de formato de dados (BR, EUA, EU, UK)
-- Charset e separador diferentes para origem e destino
-- Opção de aspas em todos os campos
-- Log de processo em tempo real
+## About
 
-### 🧹 Limpar CSV
-- Remover aspas (simples e duplas)
-- Remover espaços extras
-- Remover quebras de linha
-- Remover caracteres especiais
-- Trim em todas as colunas
-- Substituição customizada (com suporte a Regex)
+CSVToolBox was born from the need to consolidate various Python scripts I used daily to process CSV files. Instead of searching for which script to use for each task, I created this unified interface with the most common tools.
 
-### 🔄 Converter Formato
-Converta entre formatos:
-- CSV ↔ Excel (XLSX)
-- CSV ↔ JSON
-- CSV ↔ XML
-- CSV ↔ TXT
+Works with both graphical interface (GUI) and command line (CLI). **Automatically detects system language** (English/Portuguese).
 
-### ⚙️ Transformar Dados
-- **DE-PARA**: Substitua valores usando tabela de referência
-- **Filtro de Colunas**: Selecione quais colunas manter
-- **Transformações**:
-  - Converter para MAIÚSCULAS/minúsculas
-  - Remover acentos
-  - Adicionar prefixo/sufixo
-  - Trim (remover espaços)
+## Installation
 
-### 📄 XML para CSV
-- Converta arquivos XML para CSV
-- Detecção automática de estrutura
-- Suporte a namespaces XML
-- Concatenação de valores repetidos
-- Modos de parsing: auto, flat, nested
-- Opções de quoting (QUOTE_ALL, QUOTE_MINIMAL, etc.)
-
-### 📑 Excel para CSV
-- Converta planilhas Excel (XLSX, XLS, XLSB)
-- Seleção de sheets específicas
-- Filtro de colunas a exportar
-- Normalização de headers:
-  - Converter para MAIÚSCULAS
-  - Remover acentos
-  - Substituir espaços por underscore
-  - Mapeamento customizado de nomes
-- Remover linhas vazias
-- Configurar separador decimal (ponto ou vírgula)
-
-### 🔤 Limpar Colunas
-- Limpeza avançada de texto em colunas específicas
-- Converter para MAIÚSCULAS
-- Remover acentos (unidecode)
-- Trim de espaços nas extremidades
-- Colapsar espaços múltiplos
-- Remover caracteres especiais
-- Correção de cedilha (Ç → C)
-- Sobrescrever ou criar nova coluna
-
-### 📝 TXT para CSV
-- Converta arquivos TXT para CSV
-- Suporte a múltiplos formatos:
-  - Delimitado (|, ;, Tab, espaço, customizado)
-  - Largura fixa (posições configuráveis)
-  - Regex (padrões de captura)
-- Definir nomes de colunas manualmente
-- Pular linhas iniciais/comentários
-- Ignorar linhas vazias
-
-## 💾 Sistema de Perfis
-
-Salve configurações de processos recorrentes para reutilização rápida:
-- Crie perfis com nome personalizado
-- Carregue perfis diretamente da sidebar
-- Exporte/importe perfis para compartilhar
-
-## 🚀 Instalação
-
-1. Clone o repositório:
 ```bash
-git clone <url-do-repositorio>
+git clone https://github.com/your-user/CSVToolBox.git
 cd CSVToolBox
-```
-
-2. Crie um ambiente virtual (recomendado):
-```bash
-python -m venv venv
-venv\Scripts\activate  # Windows
-# ou
-source venv/bin/activate  # Linux/Mac
-```
-
-3. Instale as dependências:
-```bash
 pip install -r requirements.txt
 ```
 
-## ▶️ Execução
+## Usage
+
+### Graphical Interface
 
 ```bash
 python main.py
 ```
 
-## 📦 Dependências
+### Command Line
 
-- **customtkinter**: Interface gráfica moderna
-- **pandas**: Manipulação de dados
-- **openpyxl**: Suporte a arquivos Excel
-- **chardet**: Detecção de encoding
-- **tqdm**: Barra de progresso (operações em batch)
+```bash
+# Show help
+python cli.py --help
 
-## 🎨 Interface
+# Merge multiple CSVs
+python cli.py merge file1.csv file2.csv -o merged.csv
 
-A aplicação utiliza CustomTkinter para uma interface moderna com:
-- Tema escuro por padrão (configurável)
-- Sidebar com navegação entre ferramentas
-- Lista de perfis salvos para acesso rápido
-- Barra de progresso para operações longas
-- Feedback visual de status
+# Split large file
+python cli.py split large_file.csv -r 50000
 
-## 📁 Estrutura do Projeto
+# Clean data
+python cli.py clean data.csv --trim --uppercase -o clean_data.csv
+
+# Convert Excel to CSV
+python cli.py convert spreadsheet.xlsx -o data.csv
+
+# Apply lookup table
+python cli.py transform data.csv -c STATE --depara states.csv
+
+# Show file info
+python cli.py info data.csv --sample 10
+
+# List saved profiles
+python cli.py profiles
+
+# View process history
+python cli.py history
+```
+
+## Available Tools
+
+| Tool | Description |
+|------|-------------|
+| **📊 Merge CSVs** | Combine multiple CSV files into one |
+| **✂️ Split CSV** | Break large files into smaller parts |
+| **🧹 Clean CSV** | Remove special characters, quotes and clean data |
+| **🔄 Convert Format** | Convert between CSV, XLSX, JSON formats |
+| **⚙️ Transform Data** | Replace values using lookup tables |
+| **📄 XML to CSV** | Extract data from XML to tabular format |
+| **📑 Excel to CSV** | Convert spreadsheets with header normalization |
+| **🔤 Clean Columns** | Remove accents and normalize column text |
+| **📝 TXT to CSV** | Convert delimited or fixed-width TXT files |
+
+## Features
+
+- 🌐 **Bilingual**: Automatic English/Portuguese based on system language
+- 📋 **Profiles**: Save configurations for recurring processes
+- 🕐 **History**: Track recent processes for quick access
+- 🖥️ **Dual Interface**: GUI and CLI support
+- 📁 **Multiple Formats**: CSV, XLSX, XLS, XLSB, XML, JSON, TXT
+- 🔍 **Auto-detection**: Encoding and separator detection
+
+## Configuration
+
+Settings and profiles are saved in:
+- **Windows**: `Documents\CSVToolBox\`
+- **Linux/Mac**: `~/Documents/CSVToolBox/`
+
+## Structure
 
 ```
 CSVToolBox/
-├── main.py                    # Aplicação principal
-├── config.json                # Configurações e perfis salvos
-├── requirements.txt           # Dependências
-├── README.md                  # Este arquivo
+├── main.py              # GUI application
+├── cli.py               # Command line interface
+├── i18n.py              # Internationalization
+├── requirements.txt
 └── tools/
-    ├── __init__.py
-    ├── profile_manager.py     # Gerenciador de perfis
-    ├── csv_merger.py          # Ferramenta de consolidação
-    ├── csv_splitter.py        # Ferramenta de divisão
-    ├── csv_cleaner.py         # Ferramenta de limpeza
-    ├── csv_converter.py       # Ferramenta de conversão
-    ├── csv_transformer.py     # Ferramenta de transformação
-    ├── xml_parser.py          # Ferramenta XML para CSV
-    ├── excel_to_csv.py        # Ferramenta Excel para CSV
-    ├── column_cleaner.py      # Ferramenta limpeza de colunas
-    └── txt_parser.py          # Ferramenta TXT para CSV
+    ├── csv_merger.py
+    ├── csv_splitter.py
+    ├── csv_cleaner.py
+    ├── csv_converter.py
+    ├── csv_transformer.py
+    ├── xml_parser.py
+    ├── excel_to_csv.py
+    ├── column_cleaner.py
+    ├── txt_parser.py
+    └── profile_manager.py
 ```
 
-## 🔧 Configurações
+## Dependencies
 
-O arquivo `config.json` armazena:
-- Perfis salvos com todas as configurações
-- Arquivos recentes
-- Configurações globais (tema, encoding padrão, etc.)
+- customtkinter - Modern GUI
+- pandas - Data manipulation
+- openpyxl - Excel files (.xlsx)
+- xlrd - Legacy Excel files (.xls)
+- pyxlsb - Binary Excel files (.xlsb)
+- chardet - Encoding detection
 
-## 📝 Exemplo de Uso
+## License
 
-### Consolidar arquivos de vendas mensais:
-1. Abra a ferramenta "Consolidar CSVs"
-2. Adicione os arquivos CSV ou selecione uma pasta
-3. Configure separador (;) e encoding (utf-8)
-4. Marque "Remover duplicatas" se necessário
-5. Defina o arquivo de saída
-6. Clique em "Executar Consolidação"
-7. Salve como perfil "Vendas Mensais" para reutilizar
+MIT
 
-### Substituir códigos usando DE-PARA:
-1. Abra "Transformar Dados"
-2. Carregue o arquivo CSV
-3. Na aba "DE-PARA", carregue a tabela de referência
-4. Selecione as colunas DE e PARA
-5. Habilite a substituição e execute
-6. Salve como perfil para uso futuro
+---
 
-## 📄 Licença
+# Português
 
-MIT License
+🇧🇷 **Português** | [🇺🇸 English](#csvtoolbox)
 
-## 👤 Autor
+Ferramenta para tratamento de arquivos CSV, Excel e outros formatos tabulares. Desenvolvida para automatizar tarefas repetitivas de manipulação de dados.
 
-Desenvolvido como parte do projeto de consolidação de ferramentas CSV.
+## Sobre
+
+O CSVToolBox nasceu da necessidade de consolidar vários scripts Python que eu usava no dia a dia para processar arquivos CSV. Em vez de ficar procurando qual script usar para cada tarefa, criei essa interface unificada com as ferramentas mais comuns.
+
+Funciona tanto com interface gráfica (GUI) quanto por linha de comando (CLI). **Detecta automaticamente o idioma do sistema** (Inglês/Português).
+
+## Instalação
+
+```bash
+git clone https://github.com/seu-usuario/CSVToolBox.git
+cd CSVToolBox
+pip install -r requirements.txt
+```
+
+## Uso
+
+### Interface Gráfica
+
+```bash
+python main.py
+```
+
+### Linha de Comando
+
+```bash
+# Ver ajuda
+python cli.py --help
+
+# Consolidar vários CSVs
+python cli.py merge arquivo1.csv arquivo2.csv -o consolidado.csv
+
+# Dividir arquivo grande
+python cli.py split arquivo_grande.csv -r 50000
+
+# Limpar dados
+python cli.py clean dados.csv --trim --uppercase -o dados_limpos.csv
+
+# Converter Excel para CSV
+python cli.py convert planilha.xlsx -o dados.csv
+
+# Aplicar DE-PARA
+python cli.py transform dados.csv -c UF --depara estados.csv
+
+# Ver informações do arquivo
+python cli.py info dados.csv --sample 10
+
+# Listar perfis salvos
+python cli.py profiles
+
+# Ver histórico de processos
+python cli.py history
+```
+
+## Ferramentas Disponíveis
+
+| Ferramenta | Descrição |
+|------------|-----------|
+| **📊 Consolidar CSVs** | Junta múltiplos arquivos CSV em um só |
+| **✂️ Dividir CSV** | Quebra arquivos grandes em partes menores |
+| **🧹 Limpar CSV** | Remove caracteres especiais, aspas e limpa dados |
+| **🔄 Converter Formato** | Converte entre CSV, XLSX, JSON |
+| **⚙️ Transformar Dados** | Substitui valores usando tabela DE-PARA |
+| **📄 XML para CSV** | Extrai dados de XML para formato tabular |
+| **📑 Excel para CSV** | Converte planilhas com normalização de headers |
+| **🔤 Limpar Colunas** | Remove acentos e normaliza texto |
+| **📝 TXT para CSV** | Converte TXT delimitado ou largura fixa |
+
+## Recursos
+
+- 🌐 **Bilíngue**: Inglês/Português automático baseado no idioma do sistema
+- 📋 **Perfis**: Salve configurações para processos recorrentes
+- 🕐 **Histórico**: Acompanhe processos recentes para acesso rápido
+- 🖥️ **Interface Dupla**: Suporte a GUI e CLI
+- 📁 **Múltiplos Formatos**: CSV, XLSX, XLS, XLSB, XML, JSON, TXT
+- 🔍 **Auto-detecção**: Detecção de encoding e separador
+
+## Configuração
+
+As configurações e perfis são salvos em:
+- **Windows**: `Documentos\CSVToolBox\`
+- **Linux/Mac**: `~/Documents/CSVToolBox/`
+
+## Licença
+
+MIT

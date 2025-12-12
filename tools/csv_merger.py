@@ -21,6 +21,10 @@ class CSVMergerTool(ctk.CTkFrame):
     def create_widgets(self):
         """Cria os widgets da ferramenta"""
         
+        
+        # === Container com Scroll ===
+        self.scroll_container = ctk.CTkScrollableFrame(self, fg_color="transparent")
+        self.scroll_container.pack(fill="both", expand=True)
         # === Cabeçalho ===
         header = ctk.CTkFrame(self, fg_color="transparent")
         header.pack(fill="x", padx=20, pady=20)
@@ -43,7 +47,7 @@ class CSVMergerTool(ctk.CTkFrame):
         self.btn_save_profile.pack(side="right", padx=5)
         
         # === Frame de Configurações ===
-        config_frame = ctk.CTkFrame(self)
+        config_frame = ctk.CTkFrame(self.scroll_container)
         config_frame.pack(fill="x", padx=20, pady=10)
         
         # Grid de configurações
@@ -94,7 +98,7 @@ class CSVMergerTool(ctk.CTkFrame):
         dedup_check.grid(row=1, column=2, columnspan=2, padx=20, pady=10, sticky="w")
         
         # === Frame de Seleção de Arquivos ===
-        files_frame = ctk.CTkFrame(self)
+        files_frame = ctk.CTkFrame(self.scroll_container)
         files_frame.pack(fill="both", expand=True, padx=20, pady=10)
         
         files_header = ctk.CTkFrame(files_frame, fg_color="transparent")
@@ -152,7 +156,7 @@ class CSVMergerTool(ctk.CTkFrame):
         self.files_count_label.pack(pady=5)
         
         # === Frame de Saída ===
-        output_frame = ctk.CTkFrame(self)
+        output_frame = ctk.CTkFrame(self.scroll_container)
         output_frame.pack(fill="x", padx=20, pady=10)
         
         output_label = ctk.CTkLabel(
@@ -174,7 +178,7 @@ class CSVMergerTool(ctk.CTkFrame):
         btn_browse_output.grid(row=0, column=2, padx=10, pady=15)
         
         # === Barra de Progresso ===
-        self.progress_frame = ctk.CTkFrame(self)
+        self.progress_frame = ctk.CTkFrame(self.scroll_container)
         self.progress_frame.pack(fill="x", padx=20, pady=10)
         
         self.progress_bar = ctk.CTkProgressBar(self.progress_frame, width=500)
@@ -190,7 +194,7 @@ class CSVMergerTool(ctk.CTkFrame):
         
         # === Botão Executar ===
         self.btn_execute = ctk.CTkButton(
-            self,
+            self.scroll_container,
             text="▶️ Executar Consolidação",
             command=self.execute,
             height=50,
@@ -421,3 +425,5 @@ class CSVMergerTool(ctk.CTkFrame):
                 self.get_settings()
             )
             messagebox.showinfo("Sucesso", f"Perfil '{profile_name}' salvo!")
+
+

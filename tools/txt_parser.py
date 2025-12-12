@@ -21,6 +21,10 @@ class TxtParserTool(ctk.CTkFrame):
     def create_widgets(self):
         """Cria os widgets da ferramenta"""
         
+        
+        # === Container com Scroll ===
+        self.scroll_container = ctk.CTkScrollableFrame(self, fg_color="transparent")
+        self.scroll_container.pack(fill="both", expand=True)
         # === Cabeçalho ===
         header = ctk.CTkFrame(self, fg_color="transparent")
         header.pack(fill="x", padx=20, pady=20)
@@ -43,7 +47,7 @@ class TxtParserTool(ctk.CTkFrame):
         self.btn_save_profile.pack(side="right", padx=5)
         
         # === Frame de Arquivo de Entrada ===
-        input_frame = ctk.CTkFrame(self)
+        input_frame = ctk.CTkFrame(self.scroll_container)
         input_frame.pack(fill="x", padx=20, pady=10)
         
         input_label = ctk.CTkLabel(
@@ -65,7 +69,7 @@ class TxtParserTool(ctk.CTkFrame):
         btn_browse_input.grid(row=0, column=2, padx=10, pady=15)
         
         # === Frame de Tipo de Arquivo ===
-        type_frame = ctk.CTkFrame(self)
+        type_frame = ctk.CTkFrame(self.scroll_container)
         type_frame.pack(fill="x", padx=20, pady=10)
         
         type_label = ctk.CTkLabel(
@@ -105,7 +109,7 @@ class TxtParserTool(ctk.CTkFrame):
         regex_radio.grid(row=1, column=2, padx=40, pady=8, sticky="w")
         
         # === Frame Opções Delimitado ===
-        self.delimited_frame = ctk.CTkFrame(self)
+        self.delimited_frame = ctk.CTkFrame(self.scroll_container)
         self.delimited_frame.pack(fill="x", padx=20, pady=10)
         
         sep_label = ctk.CTkLabel(
@@ -135,7 +139,7 @@ class TxtParserTool(ctk.CTkFrame):
         self.custom_sep_entry.grid(row=0, column=3, padx=10, pady=10, sticky="w")
         
         # === Frame Opções Largura Fixa ===
-        self.fixed_frame = ctk.CTkFrame(self)
+        self.fixed_frame = ctk.CTkFrame(self.scroll_container)
         
         fixed_label = ctk.CTkLabel(
             self.fixed_frame,
@@ -157,7 +161,7 @@ class TxtParserTool(ctk.CTkFrame):
         positions_hint.grid(row=2, column=0, padx=20, pady=5, sticky="w")
         
         # === Frame Opções Regex ===
-        self.regex_frame = ctk.CTkFrame(self)
+        self.regex_frame = ctk.CTkFrame(self.scroll_container)
         
         regex_label = ctk.CTkLabel(
             self.regex_frame,
@@ -179,7 +183,7 @@ class TxtParserTool(ctk.CTkFrame):
         regex_hint.grid(row=2, column=0, padx=20, pady=5, sticky="w")
         
         # === Frame de Configurações ===
-        config_frame = ctk.CTkFrame(self)
+        config_frame = ctk.CTkFrame(self.scroll_container)
         config_frame.pack(fill="x", padx=20, pady=10)
         
         config_label = ctk.CTkLabel(
@@ -260,7 +264,7 @@ class TxtParserTool(ctk.CTkFrame):
         self.skip_lines_entry.grid(row=4, column=3, padx=10, pady=8, sticky="w")
         
         # === Frame de Saída ===
-        output_frame = ctk.CTkFrame(self)
+        output_frame = ctk.CTkFrame(self.scroll_container)
         output_frame.pack(fill="x", padx=20, pady=10)
         
         output_label = ctk.CTkLabel(
@@ -294,7 +298,7 @@ class TxtParserTool(ctk.CTkFrame):
         out_sep_menu.grid(row=1, column=1, padx=10, pady=10, sticky="w")
         
         # === Barra de Progresso ===
-        self.progress_frame = ctk.CTkFrame(self)
+        self.progress_frame = ctk.CTkFrame(self.scroll_container)
         self.progress_frame.pack(fill="x", padx=20, pady=10)
         
         self.progress_bar = ctk.CTkProgressBar(self.progress_frame, width=500)
@@ -310,7 +314,7 @@ class TxtParserTool(ctk.CTkFrame):
         
         # === Botão Executar ===
         self.btn_execute = ctk.CTkButton(
-            self,
+            self.scroll_container,
             text="▶️ Converter para CSV",
             command=self.execute,
             height=50,
@@ -603,3 +607,5 @@ class TxtParserTool(ctk.CTkFrame):
                 self.get_settings()
             )
             messagebox.showinfo("Sucesso", f"Perfil '{profile_name}' salvo!")
+
+

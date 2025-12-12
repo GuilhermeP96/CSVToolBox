@@ -26,6 +26,10 @@ class ExcelToCSVTool(ctk.CTkFrame):
     def create_widgets(self):
         """Cria os widgets da ferramenta"""
         
+        
+        # === Container com Scroll ===
+        self.scroll_container = ctk.CTkScrollableFrame(self, fg_color="transparent")
+        self.scroll_container.pack(fill="both", expand=True)
         # === Cabeçalho ===
         header = ctk.CTkFrame(self, fg_color="transparent")
         header.pack(fill="x", padx=20, pady=20)
@@ -48,7 +52,7 @@ class ExcelToCSVTool(ctk.CTkFrame):
         self.btn_save_profile.pack(side="right", padx=5)
         
         # === Frame de Arquivo de Entrada ===
-        input_frame = ctk.CTkFrame(self)
+        input_frame = ctk.CTkFrame(self.scroll_container)
         input_frame.pack(fill="x", padx=20, pady=10)
         
         input_label = ctk.CTkLabel(
@@ -101,7 +105,7 @@ class ExcelToCSVTool(ctk.CTkFrame):
         self.info_label.grid(row=1, column=2, columnspan=2, padx=10, pady=10)
         
         # === Frame de Seleção de Colunas ===
-        columns_frame = ctk.CTkFrame(self)
+        columns_frame = ctk.CTkFrame(self.scroll_container)
         columns_frame.pack(fill="x", padx=20, pady=10)
         
         columns_header = ctk.CTkFrame(columns_frame, fg_color="transparent")
@@ -139,7 +143,7 @@ class ExcelToCSVTool(ctk.CTkFrame):
         self.column_vars = {}
         
         # === Frame de Normalização de Cabeçalhos ===
-        header_frame = ctk.CTkFrame(self)
+        header_frame = ctk.CTkFrame(self.scroll_container)
         header_frame.pack(fill="x", padx=20, pady=10)
         
         header_label = ctk.CTkLabel(
@@ -182,7 +186,7 @@ class ExcelToCSVTool(ctk.CTkFrame):
         space_check.grid(row=1, column=3, padx=20, pady=5, sticky="w")
         
         # === Frame de Configurações de Saída ===
-        output_config = ctk.CTkFrame(self)
+        output_config = ctk.CTkFrame(self.scroll_container)
         output_config.pack(fill="x", padx=20, pady=10)
         
         output_config_label = ctk.CTkLabel(
@@ -249,7 +253,7 @@ class ExcelToCSVTool(ctk.CTkFrame):
         drop_check.grid(row=2, column=2, columnspan=2, padx=20, pady=10, sticky="w")
         
         # === Frame de Saída ===
-        output_frame = ctk.CTkFrame(self)
+        output_frame = ctk.CTkFrame(self.scroll_container)
         output_frame.pack(fill="x", padx=20, pady=10)
         
         output_label = ctk.CTkLabel(
@@ -271,7 +275,7 @@ class ExcelToCSVTool(ctk.CTkFrame):
         btn_browse_output.grid(row=0, column=2, padx=10, pady=15)
         
         # === Barra de Progresso ===
-        self.progress_frame = ctk.CTkFrame(self)
+        self.progress_frame = ctk.CTkFrame(self.scroll_container)
         self.progress_frame.pack(fill="x", padx=20, pady=10)
         
         self.progress_bar = ctk.CTkProgressBar(self.progress_frame, width=500)
@@ -287,7 +291,7 @@ class ExcelToCSVTool(ctk.CTkFrame):
         
         # === Botão Executar ===
         self.btn_execute = ctk.CTkButton(
-            self,
+            self.scroll_container,
             text="▶️ Executar Conversão",
             command=self.execute,
             height=50,
@@ -578,3 +582,5 @@ class ExcelToCSVTool(ctk.CTkFrame):
                 self.get_settings()
             )
             messagebox.showinfo("Sucesso", f"Perfil '{profile_name}' salvo!")
+
+

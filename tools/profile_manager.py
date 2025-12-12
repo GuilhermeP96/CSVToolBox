@@ -7,8 +7,14 @@ from datetime import datetime
 class ProfileManager:
     """Gerencia perfis de configuração para processos recorrentes"""
     
-    def __init__(self, config: dict):
+    def __init__(self, config: dict, save_callback=None):
         self.config = config
+        self.save_callback = save_callback
+        
+    def _save(self):
+        """Chama o callback para salvar configurações"""
+        if self.save_callback:
+            self.save_callback()
         
     def get_profiles(self) -> dict:
         """Retorna todos os perfis"""
@@ -29,17 +35,20 @@ class ProfileManager:
             "created_at": datetime.now().isoformat(),
             "updated_at": datetime.now().isoformat()
         }
+        self._save()
     
     def update_profile(self, name: str, settings: dict):
         """Atualiza as configurações de um perfil existente"""
         if name in self.config.get("profiles", {}):
             self.config["profiles"][name]["settings"] = settings
             self.config["profiles"][name]["updated_at"] = datetime.now().isoformat()
+            self._save()
     
     def delete_profile(self, name: str) -> bool:
         """Remove um perfil"""
         if name in self.config.get("profiles", {}):
             del self.config["profiles"][name]
+            self._save()
             return True
         return False
     

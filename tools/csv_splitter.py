@@ -21,8 +21,12 @@ class CSVSplitterTool(ctk.CTkFrame):
     def create_widgets(self):
         """Cria os widgets da ferramenta"""
         
+        # === Container com Scroll ===
+        self.scroll_container = ctk.CTkScrollableFrame(self, fg_color="transparent")
+        self.scroll_container.pack(fill="both", expand=True)
+        
         # === Cabeçalho ===
-        header = ctk.CTkFrame(self, fg_color="transparent")
+        header = ctk.CTkFrame(self.scroll_container, fg_color="transparent")
         header.pack(fill="x", padx=20, pady=20)
         
         title = ctk.CTkLabel(
@@ -43,7 +47,7 @@ class CSVSplitterTool(ctk.CTkFrame):
         self.btn_save_profile.pack(side="right", padx=5)
         
         # === Frame de Arquivo de Entrada ===
-        input_frame = ctk.CTkFrame(self)
+        input_frame = ctk.CTkFrame(self.scroll_container)
         input_frame.pack(fill="x", padx=20, pady=10)
         
         input_label = ctk.CTkLabel(
@@ -73,7 +77,7 @@ class CSVSplitterTool(ctk.CTkFrame):
         self.file_info_label.grid(row=0, column=3, padx=10, pady=15)
         
         # === Frame de Configurações de Origem ===
-        origin_frame = ctk.CTkFrame(self)
+        origin_frame = ctk.CTkFrame(self.scroll_container)
         origin_frame.pack(fill="x", padx=20, pady=10)
         
         origin_label = ctk.CTkLabel(
@@ -110,7 +114,7 @@ class CSVSplitterTool(ctk.CTkFrame):
         sep_menu.grid(row=1, column=3, padx=10, pady=10, sticky="w")
         
         # === Frame de Divisão ===
-        split_frame = ctk.CTkFrame(self)
+        split_frame = ctk.CTkFrame(self.scroll_container)
         split_frame.pack(fill="x", padx=20, pady=10)
         
         split_label = ctk.CTkLabel(
@@ -146,7 +150,7 @@ class CSVSplitterTool(ctk.CTkFrame):
             btn.pack(side="left", padx=2)
         
         # === Frame de Configurações de Destino ===
-        dest_frame = ctk.CTkFrame(self)
+        dest_frame = ctk.CTkFrame(self.scroll_container)
         dest_frame.pack(fill="x", padx=20, pady=10)
         
         dest_label = ctk.CTkLabel(
@@ -183,7 +187,7 @@ class CSVSplitterTool(ctk.CTkFrame):
         dest_sep_menu.grid(row=1, column=3, padx=10, pady=10, sticky="w")
         
         # === Frame de Formato de Dados ===
-        format_frame = ctk.CTkFrame(self)
+        format_frame = ctk.CTkFrame(self.scroll_container)
         format_frame.pack(fill="x", padx=20, pady=10)
         
         format_label = ctk.CTkLabel(
@@ -234,7 +238,7 @@ class CSVSplitterTool(ctk.CTkFrame):
         keep_header.grid(row=2, column=2, columnspan=2, padx=20, pady=10, sticky="w")
         
         # === Frame de Saída ===
-        output_frame = ctk.CTkFrame(self)
+        output_frame = ctk.CTkFrame(self.scroll_container)
         output_frame.pack(fill="x", padx=20, pady=10)
         
         output_label = ctk.CTkLabel(
@@ -271,7 +275,7 @@ class CSVSplitterTool(ctk.CTkFrame):
         prefix_hint.grid(row=1, column=2, padx=10, pady=10, sticky="w")
         
         # === Log de Processo ===
-        log_frame = ctk.CTkFrame(self)
+        log_frame = ctk.CTkFrame(self.scroll_container)
         log_frame.pack(fill="both", expand=True, padx=20, pady=10)
         
         log_label = ctk.CTkLabel(
@@ -285,7 +289,7 @@ class CSVSplitterTool(ctk.CTkFrame):
         self.log_text.pack(fill="both", expand=True, padx=10, pady=5)
         
         # === Barra de Progresso ===
-        self.progress_frame = ctk.CTkFrame(self)
+        self.progress_frame = ctk.CTkFrame(self.scroll_container)
         self.progress_frame.pack(fill="x", padx=20, pady=10)
         
         self.progress_bar = ctk.CTkProgressBar(self.progress_frame, width=500)
