@@ -10,6 +10,16 @@ import chardet
 from pathlib import Path
 import threading
 
+# Importar workflow manager
+from tools.workflow_manager import workflow_manager
+
+# Importar sistema de internacionalização
+try:
+    from i18n import t
+except ImportError:
+    def t(key):
+        return key
+
 
 class ColumnCleanerTool(ctk.CTkFrame):
     """Ferramenta para limpeza avançada de colunas com unidecode e normalização"""
@@ -35,7 +45,7 @@ class ColumnCleanerTool(ctk.CTkFrame):
         
         title = ctk.CTkLabel(
             header,
-            text="🔤 Limpar Colunas",
+            text="🧹 Limpar Colunas",
             font=ctk.CTkFont(size=24, weight="bold")
         )
         title.pack(side="left")
@@ -106,7 +116,7 @@ class ColumnCleanerTool(ctk.CTkFrame):
         )
         enc_menu.grid(row=1, column=3, padx=5, pady=5, sticky="w")
         
-        # === Frame de Seleção de Colunas ===
+        # === Frame de Seleão de Colunas ===
         columns_frame = ctk.CTkFrame(self.scroll_container)
         columns_frame.pack(fill="x", padx=20, pady=10)
         
@@ -143,13 +153,13 @@ class ColumnCleanerTool(ctk.CTkFrame):
         
         self.column_vars = {}
         
-        # === Frame de Opções de Limpeza ===
+        # === Frame de Opões de Limpeza ===
         clean_frame = ctk.CTkFrame(self.scroll_container)
         clean_frame.pack(fill="x", padx=20, pady=10)
         
         clean_label = ctk.CTkLabel(
             clean_frame,
-            text="Opções de Limpeza",
+            text="Opões de Limpeza",
             font=ctk.CTkFont(size=14, weight="bold")
         )
         clean_label.grid(row=0, column=0, columnspan=4, padx=20, pady=10, sticky="w")
@@ -158,7 +168,7 @@ class ColumnCleanerTool(ctk.CTkFrame):
         self.uppercase_var = ctk.BooleanVar(value=True)
         uppercase_check = ctk.CTkCheckBox(
             clean_frame,
-            text="Converter para MAIÚSCULAS",
+            text="Converter para MAIçÚSCULAS",
             variable=self.uppercase_var
         )
         uppercase_check.grid(row=1, column=0, padx=20, pady=8, sticky="w")
@@ -199,7 +209,7 @@ class ColumnCleanerTool(ctk.CTkFrame):
         self.fix_cedilla_var = ctk.BooleanVar(value=True)
         fix_cedilla_check = ctk.CTkCheckBox(
             clean_frame,
-            text="Corrigir Ç → C",
+            text="Corrigir ç → C",
             variable=self.fix_cedilla_var
         )
         fix_cedilla_check.grid(row=3, column=1, padx=40, pady=8, sticky="w")
@@ -245,13 +255,13 @@ class ColumnCleanerTool(ctk.CTkFrame):
         )
         new_col_hint.grid(row=2, column=2, padx=10, pady=5, sticky="w")
         
-        # === Frame de Saída ===
+        # === Frame de Saçida ===
         output_frame = ctk.CTkFrame(self.scroll_container)
         output_frame.pack(fill="x", padx=20, pady=10)
         
         output_label = ctk.CTkLabel(
             output_frame,
-            text="Arquivo de Saída:",
+            text="Arquivo de Saçida:",
             font=ctk.CTkFont(size=14)
         )
         output_label.grid(row=0, column=0, padx=20, pady=15, sticky="w")
@@ -294,6 +304,18 @@ class ColumnCleanerTool(ctk.CTkFrame):
         )
         self.btn_execute.pack(pady=20)
         
+        # === Botão Adicionar ao Workflow ===
+        self.btn_add_workflow = ctk.CTkButton(
+            self.scroll_container,
+            text="➕ " + t("add_to_workflow"),
+            command=self.add_to_workflow,
+            height=40,
+            font=ctk.CTkFont(size=14),
+            fg_color="purple",
+            hover_color="darkmagenta"
+        )
+        self.btn_add_workflow.pack(pady=(0, 20))
+        
     def browse_input(self):
         """Seleciona o arquivo de entrada"""
         file = filedialog.askopenfilename(
@@ -328,7 +350,7 @@ class ColumnCleanerTool(ctk.CTkFrame):
             
             self.update_column_checkboxes()
             
-            # Sugerir saída
+            # Sugerir saçida
             base = os.path.splitext(filepath)[0]
             self.output_entry.delete(0, "end")
             self.output_entry.insert(0, f"{base}_limpo.csv")
@@ -366,7 +388,7 @@ class ColumnCleanerTool(ctk.CTkFrame):
             var.set(False)
             
     def browse_output(self):
-        """Seleciona o arquivo de saída"""
+        """Seleciona o arquivo de saçida"""
         file = filedialog.asksaveasfilename(
             title="Salvar como",
             defaultextension=".csv",
@@ -386,7 +408,7 @@ class ColumnCleanerTool(ctk.CTkFrame):
         
         # Corrigir cedilha antes de remover acentos
         if self.fix_cedilla_var.get():
-            text = text.replace("Ç", "C").replace("ç", "c")
+            text = text.replace("ç", "C").replace("ç", "c")
         
         # Remover acentos (unidecode style)
         if self.remove_accents_var.get():
@@ -419,10 +441,10 @@ class ColumnCleanerTool(ctk.CTkFrame):
             
         output_file = self.output_entry.get()
         if not output_file:
-            messagebox.showwarning("Aviso", "Selecione um arquivo de saída!")
+            messagebox.showwarning("Aviso", "Selecione um arquivo de saçida!")
             return
         
-        # Verificar se há colunas selecionadas
+        # Verificar se hça colunas selecionadas
         selected_cols = [col for col, var in self.column_vars.items() if var.get()]
         if not selected_cols:
             messagebox.showwarning("Aviso", "Selecione ao menos uma coluna para limpar!")
@@ -474,11 +496,11 @@ class ColumnCleanerTool(ctk.CTkFrame):
             result_df.to_csv(output_file, sep=sep, index=False, encoding='utf-8')
             
             self.progress_bar.set(1.0)
-            self.status_label.configure(text=f"Concluído! {len(result_df)} linhas, {total_cols} colunas limpas")
+            self.status_label.configure(text=f"Concluçido! {len(result_df)} linhas, {total_cols} colunas limpas")
             
             messagebox.showinfo(
                 "Sucesso",
-                f"Limpeza concluída!\n\n"
+                f"Limpeza concluçida!\n\n"
                 f"Linhas: {len(result_df)}\n"
                 f"Colunas limpas: {total_cols}\n"
                 f"Arquivo: {output_file}"
@@ -544,5 +566,41 @@ class ColumnCleanerTool(ctk.CTkFrame):
                 self.get_settings()
             )
             messagebox.showinfo("Sucesso", f"Perfil '{profile_name}' salvo!")
+
+    def add_to_workflow(self):
+        """Adiciona a configuração atual como etapa do workflow"""
+        input_file = self.input_entry.get().strip()
+        output_file = self.output_entry.get().strip()
+        
+        if not input_file:
+            messagebox.showwarning(t("warning"), t("select_input_first"))
+            return
+            
+        if not output_file:
+            messagebox.showwarning(t("warning"), t("select_output_first"))
+            return
+            
+        # Perguntar se deve usar saída anterior
+        use_previous = False
+        if workflow_manager.get_step_count() > 0:
+            use_previous = messagebox.askyesno(
+                t("workflow"),
+                t("use_previous_output_question")
+            )
+            
+        # Adicionar ao workflow
+        workflow_manager.add_step(
+            tool_id="column_cleaner",
+            tool_name="🔧 " + t("tool_column_cleaner"),
+            input_file=input_file if not use_previous else None,
+            output_file=output_file,
+            config=self.get_settings(),
+            use_previous_output=use_previous
+        )
+        
+        messagebox.showinfo(
+            t("success"),
+            f"{t('step_added_to_workflow')}\n{t('total_steps')}: {workflow_manager.get_step_count()}"
+        )
 
 

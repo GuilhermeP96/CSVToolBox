@@ -7,6 +7,16 @@ import os
 from pathlib import Path
 import chardet
 
+# Importar workflow manager
+from tools.workflow_manager import workflow_manager
+
+# Importar sistema de internacionalização
+try:
+    from i18n import t
+except ImportError:
+    def t(key):
+        return key
+
 
 class CSVSplitterTool(ctk.CTkFrame):
     """Ferramenta para dividir arquivos CSV grandes em partes menores"""
@@ -124,8 +134,8 @@ class CSVSplitterTool(ctk.CTkFrame):
         )
         split_label.grid(row=0, column=0, columnspan=4, padx=20, pady=10, sticky="w")
         
-        # Máximo de registros por arquivo
-        max_rows_label = ctk.CTkLabel(split_frame, text="Máx. registros por arquivo:", font=ctk.CTkFont(size=13))
+        # Mçaximo de registros por arquivo
+        max_rows_label = ctk.CTkLabel(split_frame, text="Mçax. registros por arquivo:", font=ctk.CTkFont(size=13))
         max_rows_label.grid(row=1, column=0, padx=20, pady=10, sticky="w")
         
         self.max_rows_entry = ctk.CTkEntry(split_frame, width=150)
@@ -220,7 +230,7 @@ class CSVSplitterTool(ctk.CTkFrame):
         )
         self.format_examples_label.grid(row=1, column=2, columnspan=3, padx=20, pady=10, sticky="w")
         
-        # Opções adicionais
+        # Opões adicionais
         self.quote_all_var = ctk.BooleanVar(value=True)
         quote_all = ctk.CTkCheckBox(
             format_frame,
@@ -237,13 +247,13 @@ class CSVSplitterTool(ctk.CTkFrame):
         )
         keep_header.grid(row=2, column=2, columnspan=2, padx=20, pady=10, sticky="w")
         
-        # === Frame de Saída ===
+        # === Frame de Saçida ===
         output_frame = ctk.CTkFrame(self.scroll_container)
         output_frame.pack(fill="x", padx=20, pady=10)
         
         output_label = ctk.CTkLabel(
             output_frame,
-            text="Pasta de Saída:",
+            text="Pasta de Saçida:",
             font=ctk.CTkFont(size=14)
         )
         output_label.grid(row=0, column=0, padx=20, pady=15, sticky="w")
@@ -315,15 +325,27 @@ class CSVSplitterTool(ctk.CTkFrame):
         )
         self.btn_execute.pack(pady=20)
         
+        # === Botão Adicionar ao Workflow ===
+        self.btn_add_workflow = ctk.CTkButton(
+            self,
+            text="➕ " + t("add_to_workflow"),
+            command=self.add_to_workflow,
+            height=40,
+            font=ctk.CTkFont(size=14),
+            fg_color="purple",
+            hover_color="darkmagenta"
+        )
+        self.btn_add_workflow.pack(pady=(0, 20))
+        
     def set_max_rows(self, value):
-        """Define o valor máximo de registros"""
+        """Define o valor mçaximo de registros"""
         self.max_rows_entry.delete(0, "end")
         self.max_rows_entry.insert(0, value)
         
     def on_format_change(self, value):
         """Atualiza exemplos quando o formato muda"""
         examples = {
-            "Manter Original": "Mantém os valores originais",
+            "Manter Original": "Mantçem os valores originais",
             "BR": "Decimal: 1.234,56 | Data: 31/12/2023 | Hora: 23:59",
             "EUA": "Decimal: 1,234.56 | Data: 12/31/2023 | Hora: 11:59 PM",
             "EU": "Decimal: 1 234,56 | Data: 2023-12-31 | Hora: 23:59",
@@ -386,11 +408,11 @@ class CSVSplitterTool(ctk.CTkFrame):
             self.file_info_label.configure(text=f"~{line_count:,} linhas")
             
         except Exception as e:
-            self.log_text.insert("end", f"Erro na detecção: {str(e)}\n")
+            self.log_text.insert("end", f"Erro na detecão: {str(e)}\n")
             
     def browse_output(self):
-        """Seleciona a pasta de saída"""
-        folder = filedialog.askdirectory(title="Selecionar pasta de saída")
+        """Seleciona a pasta de saçida"""
+        folder = filedialog.askdirectory(title="Selecionar pasta de saçida")
         
         if folder:
             self.output_entry.delete(0, "end")
@@ -446,7 +468,7 @@ class CSVSplitterTool(ctk.CTkFrame):
             return
             
         if not output_dir:
-            messagebox.showwarning("Aviso", "Selecione uma pasta de saída!")
+            messagebox.showwarning("Aviso", "Selecione uma pasta de saçida!")
             return
             
         if not prefix:
@@ -455,7 +477,7 @@ class CSVSplitterTool(ctk.CTkFrame):
         try:
             max_rows = int(self.max_rows_entry.get())
         except ValueError:
-            messagebox.showerror("Erro", "Número máximo de registros inválido!")
+            messagebox.showerror("Erro", "Número mçaximo de registros invçalido!")
             return
         
         try:
@@ -489,7 +511,7 @@ class CSVSplitterTool(ctk.CTkFrame):
             total_chunks = (total_rows // max_rows) + (1 if total_rows % max_rows != 0 else 0)
             self.log_text.insert("end", f"Arquivos a gerar: {total_chunks}\n\n")
             
-            # Configurações de saída
+            # Configurações de saçida
             dest_sep = self.get_separator(self.dest_sep_var)
             dest_charset = self.dest_charset_var.get()
             quoting = 1 if self.quote_all_var.get() else 0  # csv.QUOTE_ALL ou csv.QUOTE_MINIMAL
@@ -521,16 +543,16 @@ class CSVSplitterTool(ctk.CTkFrame):
                 file_count += 1
             
             self.progress_bar.set(1.0)
-            self.status_label.configure(text=f"Concluído! {total_chunks} arquivos gerados.")
+            self.status_label.configure(text=f"Concluçido! {total_chunks} arquivos gerados.")
             
-            self.log_text.insert("end", f"\n✅ Divisão concluída!\n")
+            self.log_text.insert("end", f"\n✅ Divisão concluçida!\n")
             self.log_text.insert("end", f"Total: {total_chunks} arquivos em {output_dir}\n")
             
             messagebox.showinfo(
                 "Sucesso",
                 f"CSV dividido com sucesso!\n\n"
                 f"Arquivos gerados: {total_chunks}\n"
-                f"Linhas por arquivo: até {max_rows:,}\n"
+                f"Linhas por arquivo: atçe {max_rows:,}\n"
                 f"Pasta: {output_dir}"
             )
             
@@ -590,3 +612,39 @@ class CSVSplitterTool(ctk.CTkFrame):
                 self.get_settings()
             )
             messagebox.showinfo("Sucesso", f"Perfil '{profile_name}' salvo!")
+
+    def add_to_workflow(self):
+        """Adiciona a configuração atual como etapa do workflow"""
+        input_file = self.input_entry.get().strip()
+        output_folder = self.output_entry.get().strip()
+        
+        if not input_file:
+            messagebox.showwarning(t("warning"), t("select_input_first"))
+            return
+            
+        if not output_folder:
+            messagebox.showwarning(t("warning"), t("select_output_first"))
+            return
+            
+        # Perguntar se deve usar saída anterior
+        use_previous = False
+        if workflow_manager.get_step_count() > 0:
+            use_previous = messagebox.askyesno(
+                t("workflow"),
+                t("use_previous_output_question")
+            )
+            
+        # Adicionar ao workflow
+        workflow_manager.add_step(
+            tool_id="splitter",
+            tool_name="✂️ " + t("tool_splitter"),
+            input_file=input_file if not use_previous else None,
+            output_file=output_folder,
+            config=self.get_settings(),
+            use_previous_output=use_previous
+        )
+        
+        messagebox.showinfo(
+            t("success"),
+            f"{t('step_added_to_workflow')}\n{t('total_steps')}: {workflow_manager.get_step_count()}"
+        )

@@ -81,15 +81,33 @@ python cli.py --help
 
 | Tool | Description |
 |------|-------------|
-| **📊 Merge CSVs** | Combine multiple CSV files into one |
+| **� Merge CSVs** | Combine multiple CSV files into one |
 | **✂️ Split CSV** | Break large files into smaller parts |
 | **🧹 Clean CSV** | Remove special characters, quotes and clean data |
 | **🔄 Convert Format** | Convert between CSV, XLSX, JSON formats |
 | **⚙️ Transform Data** | Replace values using lookup tables |
 | **📄 XML to CSV** | Extract data from XML to tabular format |
-| **📑 Excel to CSV** | Convert spreadsheets with header normalization |
-| **🔤 Clean Columns** | Remove accents and normalize column text |
+| **📊 Excel to CSV** | Convert spreadsheets with header normalization |
+| **📊 Excel Multi-Profiles** | Advanced Excel conversion with configurable profiles |
+| **🔧 Clean Columns** | Remove accents and normalize column text |
 | **📝 TXT to CSV** | Convert delimited or fixed-width TXT files |
+| **📊 Verticalize Data** | Unpivot data and apply sanitization |
+| **🔀 Workflow Orchestrator** | Create and run automated process sequences |
+
+## New in v1.1: Workflow Orchestrator
+
+Create automated workflows by chaining multiple tools:
+
+1. Configure any tool with your parameters
+2. Click **"➕ Add to Workflow"** button
+3. Repeat for each step you need
+4. Go to Workflow Orchestrator and click **"▶️ Run All"**
+
+**Features:**
+- Visual queue with step status
+- Reorder/remove steps
+- Save/load workflow presets
+- Chain outputs: each step can use previous step's output
 
 ## Features
 
@@ -99,12 +117,15 @@ python cli.py --help
 - 🖥️ **Dual Interface**: GUI and CLI support
 - 📁 **Multiple Formats**: CSV, XLSX, XLS, XLSB, XML, JSON, TXT
 - 🔍 **Auto-detection**: Encoding and separator detection
+- 🔀 **Workflow Automation**: Chain multiple tools into automated sequences
 
 ## Configuration
 
 Settings and profiles are saved in:
 - **Windows**: `Documents\CSVToolBox\`
 - **Linux/Mac**: `~/Documents/CSVToolBox/`
+
+Workflows are saved in: `Documents\CSVToolBox\workflows\`
 
 ## Structure
 
@@ -122,8 +143,12 @@ CSVToolBox/
     ├── csv_transformer.py
     ├── xml_parser.py
     ├── excel_to_csv.py
+    ├── xlsx_to_csv_profiles.py
     ├── column_cleaner.py
     ├── txt_parser.py
+    ├── data_verticalizer.py    # NEW
+    ├── workflow_manager.py      # NEW
+    ├── workflow_orchestrator.py # NEW
     └── profile_manager.py
 ```
 
@@ -216,15 +241,33 @@ python cli.py --help
 
 | Ferramenta | Descrição |
 |------------|-----------|
-| **📊 Consolidar CSVs** | Junta múltiplos arquivos CSV em um só |
+| **� Consolidar CSVs** | Junta múltiplos arquivos CSV em um só |
 | **✂️ Dividir CSV** | Quebra arquivos grandes em partes menores |
 | **🧹 Limpar CSV** | Remove caracteres especiais, aspas e limpa dados |
 | **🔄 Converter Formato** | Converte entre CSV, XLSX, JSON |
 | **⚙️ Transformar Dados** | Substitui valores usando tabela DE-PARA |
 | **📄 XML para CSV** | Extrai dados de XML para formato tabular |
-| **📑 Excel para CSV** | Converte planilhas com normalização de headers |
-| **🔤 Limpar Colunas** | Remove acentos e normaliza texto |
+| **📊 Excel para CSV** | Converte planilhas com normalização de headers |
+| **📊 Excel Multi-Perfis** | Conversão avançada de Excel com perfis configuráveis |
+| **🔧 Limpar Colunas** | Remove acentos e normaliza texto de colunas |
 | **📝 TXT para CSV** | Converte TXT delimitado ou largura fixa |
+| **📊 Verticalizar Dados** | Despivota dados e aplica higienização |
+| **🔀 Orquestrador de Workflow** | Cria e executa sequências de processos automatizados |
+
+## Novidade v1.1: Orquestrador de Workflow
+
+Crie fluxos de trabalho automatizados encadeando múltiplas ferramentas:
+
+1. Configure qualquer ferramenta com seus parâmetros
+2. Clique no botão **"➕ Adicionar ao Workflow"**
+3. Repita para cada etapa que precisar
+4. Vá ao Orquestrador de Workflow e clique **"▶️ Executar Todos"**
+
+**Recursos:**
+- Fila visual com status de cada etapa
+- Reordenar/remover etapas
+- Salvar/carregar presets de workflow
+- Encadear saídas: cada etapa pode usar a saída da anterior
 
 ## Recursos
 
@@ -233,13 +276,50 @@ python cli.py --help
 - 🕐 **Histórico**: Acompanhe processos recentes para acesso rápido
 - 🖥️ **Interface Dupla**: Suporte a GUI e CLI
 - 📁 **Múltiplos Formatos**: CSV, XLSX, XLS, XLSB, XML, JSON, TXT
-- 🔍 **Auto-detecção**: Detecção de encoding e separador
+- 🔍 **Auto-detecção**: Detecta encoding e separador automaticamente
+- 🔀 **Automação de Workflow**: Encadeie múltiplas ferramentas em sequências automatizadas
 
 ## Configuração
 
 As configurações e perfis são salvos em:
 - **Windows**: `Documentos\CSVToolBox\`
 - **Linux/Mac**: `~/Documents/CSVToolBox/`
+
+Workflows são salvos em: `Documentos\CSVToolBox\workflows\`
+
+## Estrutura
+
+```
+CSVToolBox/
+├── main.py              # Aplicação GUI
+├── cli.py               # Interface de linha de comando
+├── i18n.py              # Internacionalização
+├── requirements.txt
+└── tools/
+    ├── csv_merger.py
+    ├── csv_splitter.py
+    ├── csv_cleaner.py
+    ├── csv_converter.py
+    ├── csv_transformer.py
+    ├── xml_parser.py
+    ├── excel_to_csv.py
+    ├── xlsx_to_csv_profiles.py
+    ├── column_cleaner.py
+    ├── txt_parser.py
+    ├── data_verticalizer.py    # NOVO
+    ├── workflow_manager.py      # NOVO
+    ├── workflow_orchestrator.py # NOVO
+    └── profile_manager.py
+```
+
+## Dependências
+
+- customtkinter - GUI moderna
+- pandas - Manipulação de dados
+- openpyxl - Arquivos Excel (.xlsx)
+- xlrd - Arquivos Excel legados (.xls)
+- pyxlsb - Arquivos Excel binários (.xlsb)
+- chardet - Detecção de encoding
 
 ## Licença
 

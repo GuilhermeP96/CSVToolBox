@@ -1,11 +1,11 @@
-# Profile Manager - Gerenciador de Perfis de Configuração
+# Profile Manager - Gerenciador de Perfis de Configuraão
 
 import json
 from pathlib import Path
 from datetime import datetime
 
 class ProfileManager:
-    """Gerencia perfis de configuração para processos recorrentes"""
+    """Gerencia perfis de configuraão para processos recorrentes"""
     
     def __init__(self, config: dict, save_callback=None):
         self.config = config
@@ -21,7 +21,7 @@ class ProfileManager:
         return self.config.get("profiles", {})
     
     def get_profile(self, name: str) -> dict:
-        """Retorna um perfil específico"""
+        """Retorna um perfil especçifico"""
         return self.config.get("profiles", {}).get(name, {})
     
     def save_profile(self, name: str, tool: str, settings: dict):

@@ -8,6 +8,16 @@ from pathlib import Path
 import chardet
 import re
 
+# Importar workflow manager
+from tools.workflow_manager import workflow_manager
+
+# Importar sistema de internacionalização
+try:
+    from i18n import t
+except ImportError:
+    def t(key):
+        return key
+
 
 class CSVCleanerTool(ctk.CTkFrame):
     """Ferramenta para limpar arquivos CSV - remover caracteres, aspas, espaços, etc."""
@@ -106,13 +116,13 @@ class CSVCleanerTool(ctk.CTkFrame):
         )
         enc_menu.grid(row=1, column=3, padx=10, pady=10, sticky="w")
         
-        # === Frame de Opções de Limpeza ===
+        # === Frame de Opões de Limpeza ===
         clean_frame = ctk.CTkFrame(self.scroll_container)
         clean_frame.pack(fill="x", padx=20, pady=10)
         
         clean_label = ctk.CTkLabel(
             clean_frame,
-            text="Opções de Limpeza",
+            text="Opões de Limpeza",
             font=ctk.CTkFont(size=14, weight="bold")
         )
         clean_label.pack(pady=10, anchor="w", padx=20)
@@ -170,14 +180,14 @@ class CSVCleanerTool(ctk.CTkFrame):
         )
         remove_empty_rows.grid(row=2, column=1, padx=40, pady=8, sticky="w")
         
-        # === Frame de Substituição Customizada ===
+        # === Frame de Substituião Customizada ===
         custom_frame = ctk.CTkFrame(self.scroll_container)
         custom_frame.pack(fill="x", padx=20, pady=10)
         
         self.custom_replace_var = ctk.BooleanVar(value=False)
         custom_check = ctk.CTkCheckBox(
             custom_frame,
-            text="Substituição customizada:",
+            text="Substituião customizada:",
             variable=self.custom_replace_var,
             font=ctk.CTkFont(size=14)
         )
@@ -203,13 +213,13 @@ class CSVCleanerTool(ctk.CTkFrame):
         )
         regex_check.grid(row=1, column=2, padx=20, pady=5, sticky="w")
         
-        # === Frame de Saída ===
+        # === Frame de Saçida ===
         output_frame = ctk.CTkFrame(self.scroll_container)
         output_frame.pack(fill="x", padx=20, pady=10)
         
         output_label = ctk.CTkLabel(
             output_frame,
-            text="Arquivo de Saída:",
+            text="Arquivo de Saçida:",
             font=ctk.CTkFont(size=14)
         )
         output_label.grid(row=0, column=0, padx=20, pady=15, sticky="w")
@@ -252,6 +262,18 @@ class CSVCleanerTool(ctk.CTkFrame):
         )
         self.btn_execute.pack(pady=20)
         
+        # === Botão Adicionar ao Workflow ===
+        self.btn_add_workflow = ctk.CTkButton(
+            self.scroll_container,
+            text="➕ " + t("add_to_workflow"),
+            command=self.add_to_workflow,
+            height=40,
+            font=ctk.CTkFont(size=14),
+            fg_color="purple",
+            hover_color="darkmagenta"
+        )
+        self.btn_add_workflow.pack(pady=(0, 20))
+        
     def browse_input(self):
         """Seleciona o arquivo de entrada"""
         file = filedialog.askopenfilename(
@@ -263,13 +285,13 @@ class CSVCleanerTool(ctk.CTkFrame):
             self.input_entry.delete(0, "end")
             self.input_entry.insert(0, file)
             
-            # Sugerir nome de saída
+            # Sugerir nome de saçida
             base = os.path.splitext(file)[0]
             self.output_entry.delete(0, "end")
             self.output_entry.insert(0, f"{base}_limpo.csv")
             
     def browse_output(self):
-        """Seleciona o arquivo de saída"""
+        """Seleciona o arquivo de saçida"""
         file = filedialog.asksaveasfilename(
             title="Salvar como",
             defaultextension=".csv",
@@ -333,7 +355,7 @@ class CSVCleanerTool(ctk.CTkFrame):
             return
             
         if not output_file:
-            messagebox.showwarning("Aviso", "Selecione um arquivo de saída!")
+            messagebox.showwarning("Aviso", "Selecione um arquivo de saçida!")
             return
         
         try:
@@ -371,13 +393,13 @@ class CSVCleanerTool(ctk.CTkFrame):
                 self.progress_bar.set(progress)
                 self.update()
             
-            # Substituição customizada
+            # Substituião customizada
             if self.custom_replace_var.get():
                 find_text = self.find_entry.get()
                 replace_text = self.replace_entry.get()
                 
                 if find_text:
-                    self.status_label.configure(text="Aplicando substituição customizada...")
+                    self.status_label.configure(text="Aplicando substituião customizada...")
                     self.update()
                     
                     if self.regex_var.get():
@@ -402,11 +424,11 @@ class CSVCleanerTool(ctk.CTkFrame):
             )
             
             self.progress_bar.set(1.0)
-            self.status_label.configure(text=f"Concluído! {len(df)} linhas processadas.")
+            self.status_label.configure(text=f"Concluçido! {len(df)} linhas processadas.")
             
             messagebox.showinfo(
                 "Sucesso",
-                f"Limpeza concluída!\n\n"
+                f"Limpeza concluçida!\n\n"
                 f"Linhas processadas: {len(df)}\n"
                 f"Arquivo: {output_file}"
             )
@@ -478,5 +500,41 @@ class CSVCleanerTool(ctk.CTkFrame):
                 self.get_settings()
             )
             messagebox.showinfo("Sucesso", f"Perfil '{profile_name}' salvo!")
+
+    def add_to_workflow(self):
+        """Adiciona a configuração atual como etapa do workflow"""
+        input_file = self.input_entry.get().strip()
+        output_file = self.output_entry.get().strip()
+        
+        if not input_file:
+            messagebox.showwarning(t("warning"), t("select_input_first"))
+            return
+            
+        if not output_file:
+            messagebox.showwarning(t("warning"), t("select_output_first"))
+            return
+            
+        # Perguntar se deve usar saída anterior
+        use_previous = False
+        if workflow_manager.get_step_count() > 0:
+            use_previous = messagebox.askyesno(
+                t("workflow"),
+                t("use_previous_output_question")
+            )
+            
+        # Adicionar ao workflow
+        workflow_manager.add_step(
+            tool_id="cleaner",
+            tool_name="🧹 " + t("tool_cleaner"),
+            input_file=input_file if not use_previous else None,
+            output_file=output_file,
+            config=self.get_settings(),
+            use_previous_output=use_previous
+        )
+        
+        messagebox.showinfo(
+            t("success"),
+            f"{t('step_added_to_workflow')}\n{t('total_steps')}: {workflow_manager.get_step_count()}"
+        )
 
 

@@ -9,6 +9,16 @@ import chardet
 import json
 import xml.etree.ElementTree as ET
 
+# Importar workflow manager
+from tools.workflow_manager import workflow_manager
+
+# Importar sistema de internacionalização
+try:
+    from i18n import t
+except ImportError:
+    def t(key):
+        return key
+
 
 class CSVConverterTool(ctk.CTkFrame):
     """Ferramenta para converter entre formatos CSV, XLSX, JSON, XML, TXT"""
@@ -119,18 +129,18 @@ class CSVConverterTool(ctk.CTkFrame):
         self.has_header_var = ctk.BooleanVar(value=True)
         has_header = ctk.CTkCheckBox(
             input_config,
-            text="Primeira linha é cabeçalho",
+            text="Primeira linha çe cabeçalho",
             variable=self.has_header_var
         )
         has_header.grid(row=2, column=0, columnspan=2, padx=20, pady=10, sticky="w")
         
-        # === Frame de Formato de Saída ===
+        # === Frame de Formato de Saçida ===
         output_format_frame = ctk.CTkFrame(self.scroll_container)
         output_format_frame.pack(fill="x", padx=20, pady=10)
         
         output_format_label = ctk.CTkLabel(
             output_format_frame,
-            text="Formato de Saída",
+            text="Formato de Saçida",
             font=ctk.CTkFont(size=14, weight="bold")
         )
         output_format_label.pack(pady=10, anchor="w", padx=20)
@@ -158,18 +168,18 @@ class CSVConverterTool(ctk.CTkFrame):
             )
             btn.grid(row=0, column=i, padx=20, pady=10)
         
-        # === Frame de Configurações de Saída ===
+        # === Frame de Configurações de Saçida ===
         self.output_config = ctk.CTkFrame(self.scroll_container)
         self.output_config.pack(fill="x", padx=20, pady=10)
         
         output_config_label = ctk.CTkLabel(
             self.output_config,
-            text="Configurações de Saída",
+            text="Configurações de Saçida",
             font=ctk.CTkFont(size=14, weight="bold")
         )
         output_config_label.grid(row=0, column=0, columnspan=4, padx=20, pady=10, sticky="w")
         
-        # Separador de saída (para CSV/TXT)
+        # Separador de saçida (para CSV/TXT)
         self.sep_out_label = ctk.CTkLabel(self.output_config, text="Separador:", font=ctk.CTkFont(size=13))
         self.sep_out_label.grid(row=1, column=0, padx=20, pady=10, sticky="w")
         
@@ -182,7 +192,7 @@ class CSVConverterTool(ctk.CTkFrame):
         )
         self.sep_out_menu.grid(row=1, column=1, padx=10, pady=10, sticky="w")
         
-        # Encoding de saída
+        # Encoding de saçida
         self.enc_out_label = ctk.CTkLabel(self.output_config, text="Encoding:", font=ctk.CTkFont(size=13))
         self.enc_out_label.grid(row=1, column=2, padx=20, pady=10, sticky="w")
         
@@ -204,22 +214,22 @@ class CSVConverterTool(ctk.CTkFrame):
         )
         self.include_header_check.grid(row=2, column=0, columnspan=2, padx=20, pady=10, sticky="w")
         
-        # Incluir índice
+        # Incluir çiíndice
         self.include_index_var = ctk.BooleanVar(value=False)
         self.include_index_check = ctk.CTkCheckBox(
             self.output_config,
-            text="Incluir índice",
+            text="Incluir çiíndice",
             variable=self.include_index_var
         )
         self.include_index_check.grid(row=2, column=2, columnspan=2, padx=20, pady=10, sticky="w")
         
-        # === Frame de Saída ===
+        # === Frame de Saçida ===
         output_frame = ctk.CTkFrame(self.scroll_container)
         output_frame.pack(fill="x", padx=20, pady=10)
         
         output_label = ctk.CTkLabel(
             output_frame,
-            text="Arquivo de Saída:",
+            text="Arquivo de Saçida:",
             font=ctk.CTkFont(size=14)
         )
         output_label.grid(row=0, column=0, padx=20, pady=15, sticky="w")
@@ -262,17 +272,29 @@ class CSVConverterTool(ctk.CTkFrame):
         )
         self.btn_execute.pack(pady=20)
         
+        # === Botão Adicionar ao Workflow ===
+        self.btn_add_workflow = ctk.CTkButton(
+            self.scroll_container,
+            text="➕ " + t("add_to_workflow"),
+            command=self.add_to_workflow,
+            height=40,
+            font=ctk.CTkFont(size=14),
+            fg_color="purple",
+            hover_color="darkmagenta"
+        )
+        self.btn_add_workflow.pack(pady=(0, 20))
+        
     def on_format_change(self):
-        """Atualiza opções baseado no formato selecionado"""
+        """Atualiza opões baseado não formato selecionado"""
         format_type = self.format_var.get()
         
-        # Habilitar/desabilitar opções conforme formato
+        # Habilitar/desabilitar opões conforme formato
         if format_type in ["csv", "txt"]:
             self.sep_out_menu.configure(state="normal")
         else:
             self.sep_out_menu.configure(state="disabled")
         
-        # Atualizar sugestão de arquivo de saída
+        # Atualizar sugestão de arquivo de saçida
         input_file = self.input_entry.get()
         if input_file:
             base = os.path.splitext(input_file)[0]
@@ -310,13 +332,13 @@ class CSVConverterTool(ctk.CTkFrame):
             }
             self.input_format_label.configure(text=f"Formato: {format_map.get(ext, 'Desconhecido')}")
             
-            # Sugerir nome de saída
+            # Sugerir nome de saçida
             base = os.path.splitext(file)[0]
             self.output_entry.delete(0, "end")
             self.output_entry.insert(0, f"{base}.{self.format_var.get()}")
             
     def browse_output(self):
-        """Seleciona o arquivo de saída"""
+        """Seleciona o arquivo de saçida"""
         format_type = self.format_var.get()
         filetypes = [("All files", "*.*")]
         
@@ -391,7 +413,7 @@ class CSVConverterTool(ctk.CTkFrame):
             raise ValueError(f"Formato não suportado: {ext}")
     
     def save_output_file(self, df, filepath):
-        """Salva o DataFrame no formato de saída"""
+        """Salva o DataFrame não formato de saçida"""
         format_type = self.format_var.get()
         encoding = self.enc_out_var.get()
         index = self.include_index_var.get()
@@ -425,7 +447,7 @@ class CSVConverterTool(ctk.CTkFrame):
             return
             
         if not output_file:
-            messagebox.showwarning("Aviso", "Selecione um arquivo de saída!")
+            messagebox.showwarning("Aviso", "Selecione um arquivo de saçida!")
             return
         
         try:
@@ -441,7 +463,7 @@ class CSVConverterTool(ctk.CTkFrame):
             self.progress_bar.set(0.6)
             self.update()
             
-            # Salvar no formato de saída
+            # Salvar não formato de saçida
             self.status_label.configure(text="Salvando arquivo...")
             self.progress_bar.set(0.8)
             self.update()
@@ -449,11 +471,11 @@ class CSVConverterTool(ctk.CTkFrame):
             self.save_output_file(df, output_file)
             
             self.progress_bar.set(1.0)
-            self.status_label.configure(text=f"Concluído! {len(df)} linhas convertidas.")
+            self.status_label.configure(text=f"Concluçido! {len(df)} linhas convertidas.")
             
             messagebox.showinfo(
                 "Sucesso",
-                f"Conversão concluída!\n\n"
+                f"Conversão concluçida!\n\n"
                 f"Linhas: {len(df)}\n"
                 f"Formato: {self.format_var.get().upper()}\n"
                 f"Arquivo: {output_file}"
@@ -513,5 +535,41 @@ class CSVConverterTool(ctk.CTkFrame):
                 self.get_settings()
             )
             messagebox.showinfo("Sucesso", f"Perfil '{profile_name}' salvo!")
+
+    def add_to_workflow(self):
+        """Adiciona a configuração atual como etapa do workflow"""
+        input_file = self.input_entry.get().strip()
+        output_file = self.output_entry.get().strip()
+        
+        if not input_file:
+            messagebox.showwarning(t("warning"), t("select_input_first"))
+            return
+            
+        if not output_file:
+            messagebox.showwarning(t("warning"), t("select_output_first"))
+            return
+            
+        # Perguntar se deve usar saída anterior
+        use_previous = False
+        if workflow_manager.get_step_count() > 0:
+            use_previous = messagebox.askyesno(
+                t("workflow"),
+                t("use_previous_output_question")
+            )
+            
+        # Adicionar ao workflow
+        workflow_manager.add_step(
+            tool_id="converter",
+            tool_name="🔄 " + t("tool_converter"),
+            input_file=input_file if not use_previous else None,
+            output_file=output_file,
+            config=self.get_settings(),
+            use_previous_output=use_previous
+        )
+        
+        messagebox.showinfo(
+            t("success"),
+            f"{t('step_added_to_workflow')}\n{t('total_steps')}: {workflow_manager.get_step_count()}"
+        )
 
 

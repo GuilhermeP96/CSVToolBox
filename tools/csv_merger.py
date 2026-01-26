@@ -7,6 +7,16 @@ import os
 from pathlib import Path
 import chardet
 
+# Importar workflow manager
+from tools.workflow_manager import workflow_manager
+
+# Importar sistema de internacionalização
+try:
+    from i18n import t
+except ImportError:
+    def t(key):
+        return key
+
 
 class CSVMergerTool(ctk.CTkFrame):
     """Ferramenta para consolidar múltiplos arquivos CSV em um único arquivo"""
@@ -31,7 +41,7 @@ class CSVMergerTool(ctk.CTkFrame):
         
         title = ctk.CTkLabel(
             header,
-            text="📊 Consolidar CSVs",
+            text="📁 Consolidar CSVs",
             font=ctk.CTkFont(size=24, weight="bold")
         )
         title.pack(side="left")
@@ -97,7 +107,7 @@ class CSVMergerTool(ctk.CTkFrame):
         )
         dedup_check.grid(row=1, column=2, columnspan=2, padx=20, pady=10, sticky="w")
         
-        # === Frame de Seleção de Arquivos ===
+        # === Frame de Seleão de Arquivos ===
         files_frame = ctk.CTkFrame(self.scroll_container)
         files_frame.pack(fill="both", expand=True, padx=20, pady=10)
         
@@ -155,13 +165,13 @@ class CSVMergerTool(ctk.CTkFrame):
         )
         self.files_count_label.pack(pady=5)
         
-        # === Frame de Saída ===
+        # === Frame de Saçida ===
         output_frame = ctk.CTkFrame(self.scroll_container)
         output_frame.pack(fill="x", padx=20, pady=10)
         
         output_label = ctk.CTkLabel(
             output_frame,
-            text="Arquivo de Saída:",
+            text="Arquivo de Saçida:",
             font=ctk.CTkFont(size=14)
         )
         output_label.grid(row=0, column=0, padx=20, pady=15, sticky="w")
@@ -195,7 +205,7 @@ class CSVMergerTool(ctk.CTkFrame):
         # === Botão Executar ===
         self.btn_execute = ctk.CTkButton(
             self.scroll_container,
-            text="▶️ Executar Consolidação",
+            text="▶️ Executar Consolidaão",
             command=self.execute,
             height=50,
             font=ctk.CTkFont(size=16, weight="bold"),
@@ -203,6 +213,18 @@ class CSVMergerTool(ctk.CTkFrame):
             hover_color="darkgreen"
         )
         self.btn_execute.pack(pady=20)
+        
+        # === Botão Adicionar ao Workflow ===
+        self.btn_add_workflow = ctk.CTkButton(
+            self.scroll_container,
+            text="➕ " + t("add_to_workflow"),
+            command=self.add_to_workflow,
+            height=40,
+            font=ctk.CTkFont(size=14),
+            fg_color="purple",
+            hover_color="darkmagenta"
+        )
+        self.btn_add_workflow.pack(pady=(0, 20))
         
     def add_files(self):
         """Adiciona arquivos CSV à lista"""
@@ -234,7 +256,7 @@ class CSVMergerTool(ctk.CTkFrame):
         self.update_files_list()
         
     def update_files_list(self):
-        """Atualiza a exibição da lista de arquivos"""
+        """Atualiza a exibião da lista de arquivos"""
         # Limpar lista atual
         for widget in self.files_list.winfo_children():
             widget.destroy()
@@ -283,7 +305,7 @@ class CSVMergerTool(ctk.CTkFrame):
             self.update_files_list()
             
     def browse_output(self):
-        """Seleciona o arquivo de saída"""
+        """Seleciona o arquivo de saçida"""
         file = filedialog.asksaveasfilename(
             title="Salvar como",
             defaultextension=".csv",
@@ -309,14 +331,14 @@ class CSVMergerTool(ctk.CTkFrame):
         return sep
         
     def execute(self):
-        """Executa a consolidação dos CSVs"""
+        """Executa a consolidaão dos CSVs"""
         if not self.selected_files:
             messagebox.showwarning("Aviso", "Nenhum arquivo selecionado!")
             return
             
         output_file = self.output_entry.get()
         if not output_file:
-            messagebox.showwarning("Aviso", "Selecione um arquivo de saída!")
+            messagebox.showwarning("Aviso", "Selecione um arquivo de saçida!")
             return
         
         try:
@@ -374,11 +396,11 @@ class CSVMergerTool(ctk.CTkFrame):
             )
             
             self.progress_bar.set(1.0)
-            self.status_label.configure(text=f"Concluído! {len(result)} linhas salvas.")
+            self.status_label.configure(text=f"Concluçido! {len(result)} linhas salvas.")
             
             messagebox.showinfo(
                 "Sucesso",
-                f"Consolidação concluída!\n\n"
+                f"Consolidaão concluçida!\n\n"
                 f"Arquivos processados: {total}\n"
                 f"Total de linhas: {len(result)}\n"
                 f"Arquivo: {output_file}"
@@ -426,4 +448,33 @@ class CSVMergerTool(ctk.CTkFrame):
             )
             messagebox.showinfo("Sucesso", f"Perfil '{profile_name}' salvo!")
 
+    def add_to_workflow(self):
+        """Adiciona a configuração atual como etapa do workflow"""
+        output_file = self.output_entry.get().strip()
+        
+        if not self.selected_files:
+            messagebox.showwarning(t("warning"), t("select_files_first"))
+            return
+            
+        if not output_file:
+            messagebox.showwarning(t("warning"), t("select_output_first"))
+            return
+            
+        # Adicionar ao workflow
+        config = self.get_settings()
+        config["input_files"] = self.selected_files
+        
+        workflow_manager.add_step(
+            tool_id="merger",
+            tool_name="📁 " + t("tool_merger"),
+            input_file=";".join(self.selected_files[:3]) + ("..." if len(self.selected_files) > 3 else ""),
+            output_file=output_file,
+            config=config,
+            use_previous_output=False
+        )
+        
+        messagebox.showinfo(
+            t("success"),
+            f"{t('step_added_to_workflow')}\n{t('total_steps')}: {workflow_manager.get_step_count()}"
+        )
 

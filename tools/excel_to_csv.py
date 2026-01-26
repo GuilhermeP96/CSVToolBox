@@ -1,4 +1,4 @@
-# Excel to CSV Tool - Ferramenta para Converter Excel para CSV com Configuração
+# Excel to CSV Tool - Ferramenta para Converter Excel para CSV com Configuraão
 
 import customtkinter as ctk
 from tkinter import filedialog, messagebox
@@ -9,6 +9,16 @@ import re
 import unicodedata
 from pathlib import Path
 import threading
+
+# Importar workflow manager
+from tools.workflow_manager import workflow_manager
+
+# Importar sistema de internacionalização
+try:
+    from i18n import t
+except ImportError:
+    def t(key):
+        return key
 
 
 class ExcelToCSVTool(ctk.CTkFrame):
@@ -104,7 +114,7 @@ class ExcelToCSVTool(ctk.CTkFrame):
         )
         self.info_label.grid(row=1, column=2, columnspan=2, padx=10, pady=10)
         
-        # === Frame de Seleção de Colunas ===
+        # === Frame de Seleão de Colunas ===
         columns_frame = ctk.CTkFrame(self.scroll_container)
         columns_frame.pack(fill="x", padx=20, pady=10)
         
@@ -142,13 +152,13 @@ class ExcelToCSVTool(ctk.CTkFrame):
         
         self.column_vars = {}
         
-        # === Frame de Normalização de Cabeçalhos ===
+        # === Frame de Normalizaão de Cabeçalhos ===
         header_frame = ctk.CTkFrame(self.scroll_container)
         header_frame.pack(fill="x", padx=20, pady=10)
         
         header_label = ctk.CTkLabel(
             header_frame,
-            text="Normalização de Cabeçalhos",
+            text="Normalizaão de Cabeçalhos",
             font=ctk.CTkFont(size=14, weight="bold")
         )
         header_label.grid(row=0, column=0, columnspan=4, padx=20, pady=10, sticky="w")
@@ -164,7 +174,7 @@ class ExcelToCSVTool(ctk.CTkFrame):
         self.uppercase_var = ctk.BooleanVar(value=True)
         uppercase_check = ctk.CTkCheckBox(
             header_frame,
-            text="MAIÚSCULAS",
+            text="MAIçÚSCULAS",
             variable=self.uppercase_var
         )
         uppercase_check.grid(row=1, column=1, padx=20, pady=5, sticky="w")
@@ -185,13 +195,13 @@ class ExcelToCSVTool(ctk.CTkFrame):
         )
         space_check.grid(row=1, column=3, padx=20, pady=5, sticky="w")
         
-        # === Frame de Configurações de Saída ===
+        # === Frame de Configurações de Saçida ===
         output_config = ctk.CTkFrame(self.scroll_container)
         output_config.pack(fill="x", padx=20, pady=10)
         
         output_config_label = ctk.CTkLabel(
             output_config,
-            text="Configurações de Saída",
+            text="Configurações de Saçida",
             font=ctk.CTkFont(size=14, weight="bold")
         )
         output_config_label.grid(row=0, column=0, columnspan=6, padx=20, pady=10, sticky="w")
@@ -235,7 +245,7 @@ class ExcelToCSVTool(ctk.CTkFrame):
         )
         dec_menu.grid(row=1, column=5, padx=10, pady=10, sticky="w")
         
-        # Opções
+        # Opões
         self.quote_all_var = ctk.BooleanVar(value=True)
         quote_check = ctk.CTkCheckBox(
             output_config,
@@ -252,13 +262,13 @@ class ExcelToCSVTool(ctk.CTkFrame):
         )
         drop_check.grid(row=2, column=2, columnspan=2, padx=20, pady=10, sticky="w")
         
-        # === Frame de Saída ===
+        # === Frame de Saçida ===
         output_frame = ctk.CTkFrame(self.scroll_container)
         output_frame.pack(fill="x", padx=20, pady=10)
         
         output_label = ctk.CTkLabel(
             output_frame,
-            text="Arquivo de Saída:",
+            text="Arquivo de Saçida:",
             font=ctk.CTkFont(size=14)
         )
         output_label.grid(row=0, column=0, padx=20, pady=15, sticky="w")
@@ -301,6 +311,18 @@ class ExcelToCSVTool(ctk.CTkFrame):
         )
         self.btn_execute.pack(pady=20)
         
+        # === Botão Adicionar ao Workflow ===
+        self.btn_add_workflow = ctk.CTkButton(
+            self.scroll_container,
+            text="➕ " + t("add_to_workflow"),
+            command=self.add_to_workflow,
+            height=40,
+            font=ctk.CTkFont(size=14),
+            fg_color="purple",
+            hover_color="darkmagenta"
+        )
+        self.btn_add_workflow.pack(pady=(0, 20))
+        
     def browse_input(self):
         """Seleciona o arquivo de entrada"""
         file = filedialog.askopenfilename(
@@ -342,7 +364,7 @@ class ExcelToCSVTool(ctk.CTkFrame):
                 self.sheet_var.set(self.sheets[0])
                 self.on_sheet_change(self.sheets[0])
             
-            # Sugerir saída
+            # Sugerir saçida
             base = os.path.splitext(filepath)[0]
             self.output_entry.delete(0, "end")
             self.output_entry.insert(0, f"{base}.csv")
@@ -401,7 +423,7 @@ class ExcelToCSVTool(ctk.CTkFrame):
             var.set(False)
             
     def browse_output(self):
-        """Seleciona o arquivo de saída"""
+        """Seleciona o arquivo de saçida"""
         file = filedialog.asksaveasfilename(
             title="Salvar como",
             defaultextension=".csv",
@@ -456,7 +478,7 @@ class ExcelToCSVTool(ctk.CTkFrame):
             return
             
         if not output_file:
-            messagebox.showwarning("Aviso", "Selecione um arquivo de saída!")
+            messagebox.showwarning("Aviso", "Selecione um arquivo de saçida!")
             return
         
         thread = threading.Thread(target=self._execute_conversion, args=(filepath, output_file))
@@ -499,7 +521,7 @@ class ExcelToCSVTool(ctk.CTkFrame):
             self.status_label.configure(text="Salvando CSV...")
             self.update()
             
-            # Configurações de saída
+            # Configurações de saçida
             sep = self.get_separator()
             encoding = self.enc_var.get()
             decimal = self.dec_var.get()
@@ -515,11 +537,11 @@ class ExcelToCSVTool(ctk.CTkFrame):
             )
             
             self.progress_bar.set(1.0)
-            self.status_label.configure(text=f"Concluído! {len(df)} linhas salvas.")
+            self.status_label.configure(text=f"Concluçido! {len(df)} linhas salvas.")
             
             messagebox.showinfo(
                 "Sucesso",
-                f"Conversão concluída!\n\n"
+                f"Conversão concluçida!\n\n"
                 f"Linhas: {len(df)}\n"
                 f"Colunas: {len(df.columns)}\n"
                 f"Arquivo: {output_file}"
@@ -582,5 +604,41 @@ class ExcelToCSVTool(ctk.CTkFrame):
                 self.get_settings()
             )
             messagebox.showinfo("Sucesso", f"Perfil '{profile_name}' salvo!")
+
+    def add_to_workflow(self):
+        """Adiciona a configuração atual como etapa do workflow"""
+        input_file = self.input_entry.get().strip()
+        output_file = self.output_entry.get().strip()
+        
+        if not input_file:
+            messagebox.showwarning(t("warning"), t("select_input_first"))
+            return
+            
+        if not output_file:
+            messagebox.showwarning(t("warning"), t("select_output_first"))
+            return
+            
+        # Perguntar se deve usar saída anterior
+        use_previous = False
+        if workflow_manager.get_step_count() > 0:
+            use_previous = messagebox.askyesno(
+                t("workflow"),
+                t("use_previous_output_question")
+            )
+            
+        # Adicionar ao workflow
+        workflow_manager.add_step(
+            tool_id="excel_to_csv",
+            tool_name="📊 " + t("tool_excel_to_csv"),
+            input_file=input_file if not use_previous else None,
+            output_file=output_file,
+            config=self.get_settings(),
+            use_previous_output=use_previous
+        )
+        
+        messagebox.showinfo(
+            t("success"),
+            f"{t('step_added_to_workflow')}\n{t('total_steps')}: {workflow_manager.get_step_count()}"
+        )
 
 

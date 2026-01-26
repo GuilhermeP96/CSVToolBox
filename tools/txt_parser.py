@@ -8,6 +8,16 @@ import re
 import chardet
 import threading
 
+# Importar workflow manager
+from tools.workflow_manager import workflow_manager
+
+# Importar sistema de internacionalização
+try:
+    from i18n import t
+except ImportError:
+    def t(key):
+        return key
+
 
 class TxtParserTool(ctk.CTkFrame):
     """Ferramenta para converter arquivos TXT em CSV"""
@@ -108,7 +118,7 @@ class TxtParserTool(ctk.CTkFrame):
         )
         regex_radio.grid(row=1, column=2, padx=40, pady=8, sticky="w")
         
-        # === Frame Opções Delimitado ===
+        # === Frame Opões Delimitado ===
         self.delimited_frame = ctk.CTkFrame(self.scroll_container)
         self.delimited_frame.pack(fill="x", padx=20, pady=10)
         
@@ -138,12 +148,12 @@ class TxtParserTool(ctk.CTkFrame):
         self.custom_sep_entry = ctk.CTkEntry(self.delimited_frame, width=50)
         self.custom_sep_entry.grid(row=0, column=3, padx=10, pady=10, sticky="w")
         
-        # === Frame Opções Largura Fixa ===
+        # === Frame Opões Largura Fixa ===
         self.fixed_frame = ctk.CTkFrame(self.scroll_container)
         
         fixed_label = ctk.CTkLabel(
             self.fixed_frame,
-            text="Posições das Colunas (ex: 0-10, 10-25, 25-50):",
+            text="Posiões das Colunas (ex: 0-10, 10-25, 25-50):",
             font=ctk.CTkFont(size=14)
         )
         fixed_label.grid(row=0, column=0, padx=20, pady=10, sticky="w")
@@ -154,13 +164,13 @@ class TxtParserTool(ctk.CTkFrame):
         
         positions_hint = ctk.CTkLabel(
             self.fixed_frame,
-            text="Separe os ranges com vírgula. Exemplo: 0-5, 5-15, 15-30, 30-50",
+            text="Separe os ranges com vçirgula. Exemplo: 0-5, 5-15, 15-30, 30-50",
             text_color="gray50",
             font=ctk.CTkFont(size=11)
         )
         positions_hint.grid(row=2, column=0, padx=20, pady=5, sticky="w")
         
-        # === Frame Opções Regex ===
+        # === Frame Opões Regex ===
         self.regex_frame = ctk.CTkFrame(self.scroll_container)
         
         regex_label = ctk.CTkLabel(
@@ -210,7 +220,7 @@ class TxtParserTool(ctk.CTkFrame):
         self.has_header_var = ctk.BooleanVar(value=False)
         has_header_check = ctk.CTkCheckBox(
             config_frame,
-            text="Primeira linha é cabeçalho",
+            text="Primeira linha çe cabeçalho",
             variable=self.has_header_var
         )
         has_header_check.grid(row=1, column=2, padx=30, pady=8, sticky="w")
@@ -229,13 +239,13 @@ class TxtParserTool(ctk.CTkFrame):
         
         header_hint = ctk.CTkLabel(
             config_frame,
-            text="Separe os nomes com vírgula. Deixe vazio para usar Col1, Col2...",
+            text="Separe os nomes com vçirgula. Deixe vazio para usar Col1, Col2...",
             text_color="gray50",
             font=ctk.CTkFont(size=11)
         )
         header_hint.grid(row=3, column=1, columnspan=3, padx=10, pady=2, sticky="w")
         
-        # Opções adicionais
+        # Opões adicionais
         self.skip_empty_var = ctk.BooleanVar(value=True)
         skip_empty_check = ctk.CTkCheckBox(
             config_frame,
@@ -263,13 +273,13 @@ class TxtParserTool(ctk.CTkFrame):
         self.skip_lines_entry.insert(0, "0")
         self.skip_lines_entry.grid(row=4, column=3, padx=10, pady=8, sticky="w")
         
-        # === Frame de Saída ===
+        # === Frame de Saçida ===
         output_frame = ctk.CTkFrame(self.scroll_container)
         output_frame.pack(fill="x", padx=20, pady=10)
         
         output_label = ctk.CTkLabel(
             output_frame,
-            text="Arquivo de Saída:",
+            text="Arquivo de Saçida:",
             font=ctk.CTkFont(size=14)
         )
         output_label.grid(row=0, column=0, padx=20, pady=15, sticky="w")
@@ -324,8 +334,20 @@ class TxtParserTool(ctk.CTkFrame):
         )
         self.btn_execute.pack(pady=20)
         
+        # === Botão Adicionar ao Workflow ===
+        self.btn_add_workflow = ctk.CTkButton(
+            self.scroll_container,
+            text="➕ " + t("add_to_workflow"),
+            command=self.add_to_workflow,
+            height=40,
+            font=ctk.CTkFont(size=14),
+            fg_color="purple",
+            hover_color="darkmagenta"
+        )
+        self.btn_add_workflow.pack(pady=(0, 20))
+        
     def toggle_options(self):
-        """Mostra/esconde frames de opções baseado no tipo selecionado"""
+        """Mostra/esconde frames de opões baseado não tipo selecionado"""
         # Esconder todos
         self.delimited_frame.pack_forget()
         self.fixed_frame.pack_forget()
@@ -352,13 +374,13 @@ class TxtParserTool(ctk.CTkFrame):
             self.input_entry.delete(0, "end")
             self.input_entry.insert(0, file)
             
-            # Sugerir arquivo de saída
+            # Sugerir arquivo de saçida
             base = os.path.splitext(file)[0]
             self.output_entry.delete(0, "end")
             self.output_entry.insert(0, f"{base}.csv")
             
     def browse_output(self):
-        """Seleciona o arquivo de saída"""
+        """Seleciona o arquivo de saçida"""
         file = filedialog.asksaveasfilename(
             title="Salvar como",
             defaultextension=".csv",
@@ -381,7 +403,7 @@ class TxtParserTool(ctk.CTkFrame):
         return sep
     
     def parse_positions(self):
-        """Parseia as posições de largura fixa"""
+        """Parseia as posiões de largura fixa"""
         positions_str = self.positions_entry.get().strip()
         positions = []
         
@@ -432,7 +454,7 @@ class TxtParserTool(ctk.CTkFrame):
             return
         
         if not output_file:
-            messagebox.showwarning("Aviso", "Selecione um arquivo de saída!")
+            messagebox.showwarning("Aviso", "Selecione um arquivo de saçida!")
             return
         
         thread = threading.Thread(target=self._execute_convert, args=(input_file, output_file))
@@ -475,7 +497,7 @@ class TxtParserTool(ctk.CTkFrame):
             # Remover newlines
             lines = [l.rstrip('\n\r') for l in lines]
             
-            # Parsear baseado no tipo
+            # Parsear baseado não tipo
             file_type = self.file_type_var.get()
             
             if file_type == "delimited":
@@ -525,11 +547,11 @@ class TxtParserTool(ctk.CTkFrame):
             df.to_csv(output_file, sep=out_sep, index=False, encoding='utf-8')
             
             self.progress_bar.set(1.0)
-            self.status_label.configure(text=f"Concluído! {len(df)} linhas, {len(df.columns)} colunas")
+            self.status_label.configure(text=f"Concluçido! {len(df)} linhas, {len(df.columns)} colunas")
             
             messagebox.showinfo(
                 "Sucesso",
-                f"Conversão concluída!\n\n"
+                f"Conversão concluçida!\n\n"
                 f"Linhas: {len(df)}\n"
                 f"Colunas: {len(df.columns)}\n"
                 f"Arquivo: {output_file}"
@@ -607,5 +629,41 @@ class TxtParserTool(ctk.CTkFrame):
                 self.get_settings()
             )
             messagebox.showinfo("Sucesso", f"Perfil '{profile_name}' salvo!")
+
+    def add_to_workflow(self):
+        """Adiciona a configuração atual como etapa do workflow"""
+        input_file = self.input_entry.get().strip()
+        output_file = self.output_entry.get().strip()
+        
+        if not input_file:
+            messagebox.showwarning(t("warning"), t("select_input_first"))
+            return
+            
+        if not output_file:
+            messagebox.showwarning(t("warning"), t("select_output_first"))
+            return
+            
+        # Perguntar se deve usar saída anterior
+        use_previous = False
+        if workflow_manager.get_step_count() > 0:
+            use_previous = messagebox.askyesno(
+                t("workflow"),
+                t("use_previous_output_question")
+            )
+            
+        # Adicionar ao workflow
+        workflow_manager.add_step(
+            tool_id="txt_parser",
+            tool_name="📝 " + t("tool_txt_parser"),
+            input_file=input_file if not use_previous else None,
+            output_file=output_file,
+            config=self.get_settings(),
+            use_previous_output=use_previous
+        )
+        
+        messagebox.showinfo(
+            t("success"),
+            f"{t('step_added_to_workflow')}\n{t('total_steps')}: {workflow_manager.get_step_count()}"
+        )
 
 

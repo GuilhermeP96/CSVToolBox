@@ -7,9 +7,19 @@ import os
 from pathlib import Path
 import chardet
 
+# Importar workflow manager
+from tools.workflow_manager import workflow_manager
+
+# Importar sistema de internacionalização
+try:
+    from i18n import t
+except ImportError:
+    def t(key):
+        return key
+
 
 class CSVTransformerTool(ctk.CTkFrame):
-    """Ferramenta para transformar dados CSV - substituição de valores, filtros, etc."""
+    """Ferramenta para transformar dados CSV - substituião de valores, filtros, etc."""
     
     def __init__(self, parent, profile_manager):
         super().__init__(parent)
@@ -104,11 +114,11 @@ class CSVTransformerTool(ctk.CTkFrame):
         )
         enc_menu.grid(row=1, column=3, padx=5, pady=5, sticky="w")
         
-        # === Abas de Transformações ===
+        # === Abas de Transformaões ===
         self.tabview = ctk.CTkTabview(self, height=350)
         self.tabview.pack(fill="both", expand=True, padx=20, pady=10)
         
-        # Tab 1: Substituição DE-PARA
+        # Tab 1: Substituião DE-PARA
         self.tab_depara = self.tabview.add("📋 DE-PARA")
         self.create_depara_tab()
         
@@ -120,13 +130,13 @@ class CSVTransformerTool(ctk.CTkFrame):
         self.tab_transform = self.tabview.add("🔄 Transformar")
         self.create_transform_tab()
         
-        # === Frame de Saída ===
+        # === Frame de Saçida ===
         output_frame = ctk.CTkFrame(self.scroll_container)
         output_frame.pack(fill="x", padx=20, pady=10)
         
         output_label = ctk.CTkLabel(
             output_frame,
-            text="Arquivo de Saída:",
+            text="Arquivo de Saçida:",
             font=ctk.CTkFont(size=14)
         )
         output_label.grid(row=0, column=0, padx=20, pady=15, sticky="w")
@@ -160,7 +170,7 @@ class CSVTransformerTool(ctk.CTkFrame):
         # === Botão Executar ===
         self.btn_execute = ctk.CTkButton(
             self.scroll_container,
-            text="▶️ Executar Transformação",
+            text="▶️ Executar Transformaão",
             command=self.execute,
             height=50,
             font=ctk.CTkFont(size=16, weight="bold"),
@@ -168,6 +178,18 @@ class CSVTransformerTool(ctk.CTkFrame):
             hover_color="darkgreen"
         )
         self.btn_execute.pack(pady=20)
+        
+        # === Botão Adicionar ao Workflow ===
+        self.btn_add_workflow = ctk.CTkButton(
+            self.scroll_container,
+            text="➕ " + t("add_to_workflow"),
+            command=self.add_to_workflow,
+            height=40,
+            font=ctk.CTkFont(size=14),
+            fg_color="purple",
+            hover_color="darkmagenta"
+        )
+        self.btn_add_workflow.pack(pady=(0, 20))
         
     def create_depara_tab(self):
         """Cria o conteúdo da aba DE-PARA"""
@@ -179,7 +201,7 @@ class CSVTransformerTool(ctk.CTkFrame):
         )
         info_label.pack(pady=10)
         
-        # Frame de configuração
+        # Frame de configuraão
         config_frame = ctk.CTkFrame(self.tab_depara)
         config_frame.pack(fill="x", padx=20, pady=10)
         
@@ -241,7 +263,7 @@ class CSVTransformerTool(ctk.CTkFrame):
         self.enable_depara_var = ctk.BooleanVar(value=False)
         enable_depara = ctk.CTkCheckBox(
             self.tab_depara,
-            text="Habilitar substituição DE-PARA",
+            text="Habilitar substituião DE-PARA",
             variable=self.enable_depara_var,
             font=ctk.CTkFont(size=14)
         )
@@ -252,7 +274,7 @@ class CSVTransformerTool(ctk.CTkFrame):
         
         info_label = ctk.CTkLabel(
             self.tab_filter,
-            text="Selecione as colunas que deseja manter no arquivo de saída",
+            text="Selecione as colunas que deseja manter não arquivo de saçida",
             text_color="gray50"
         )
         info_label.pack(pady=10)
@@ -261,7 +283,7 @@ class CSVTransformerTool(ctk.CTkFrame):
         list_frame = ctk.CTkFrame(self.tab_filter)
         list_frame.pack(fill="both", expand=True, padx=20, pady=10)
         
-        # Botões de seleção
+        # Botões de seleão
         btn_frame = ctk.CTkFrame(list_frame, fg_color="transparent")
         btn_frame.pack(fill="x", pady=5)
         
@@ -304,12 +326,12 @@ class CSVTransformerTool(ctk.CTkFrame):
         
         info_label = ctk.CTkLabel(
             self.tab_transform,
-            text="Aplique transformações nos valores das colunas",
+            text="Aplique transformaões nos valores das colunas",
             text_color="gray50"
         )
         info_label.pack(pady=10)
         
-        # Frame de configuração
+        # Frame de configuraão
         config_frame = ctk.CTkFrame(self.tab_transform)
         config_frame.pack(fill="x", padx=20, pady=10)
         
@@ -326,11 +348,11 @@ class CSVTransformerTool(ctk.CTkFrame):
         )
         self.transform_column_menu.grid(row=0, column=1, padx=10, pady=10, sticky="w")
         
-        # Transformações disponíveis
+        # Transformaões disponçiveis
         self.uppercase_var = ctk.BooleanVar(value=False)
         uppercase = ctk.CTkCheckBox(
             config_frame,
-            text="Converter para MAIÚSCULAS",
+            text="Converter para MAIçÚSCULAS",
             variable=self.uppercase_var
         )
         uppercase.grid(row=1, column=0, columnspan=2, padx=20, pady=5, sticky="w")
@@ -372,11 +394,11 @@ class CSVTransformerTool(ctk.CTkFrame):
         self.suffix_entry = ctk.CTkEntry(config_frame, width=150)
         self.suffix_entry.grid(row=2, column=3, padx=10, pady=5)
         
-        # Habilitar transformação
+        # Habilitar transformaão
         self.enable_transform_var = ctk.BooleanVar(value=False)
         enable_transform = ctk.CTkCheckBox(
             self.tab_transform,
-            text="Habilitar transformações",
+            text="Habilitar transformaões",
             variable=self.enable_transform_var,
             font=ctk.CTkFont(size=14)
         )
@@ -426,7 +448,7 @@ class CSVTransformerTool(ctk.CTkFrame):
             # Atualizar checkboxes de colunas
             self.update_column_checkboxes(columns)
             
-            # Sugerir saída
+            # Sugerir saçida
             base = os.path.splitext(filepath)[0]
             self.output_entry.delete(0, "end")
             self.output_entry.insert(0, f"{base}_transformado.csv")
@@ -498,7 +520,7 @@ class CSVTransformerTool(ctk.CTkFrame):
                 messagebox.showerror("Erro", f"Erro ao carregar DE-PARA: {str(e)}")
                 
     def browse_output(self):
-        """Seleciona o arquivo de saída"""
+        """Seleciona o arquivo de saçida"""
         file = filedialog.asksaveasfilename(
             title="Salvar como",
             defaultextension=".csv",
@@ -521,14 +543,14 @@ class CSVTransformerTool(ctk.CTkFrame):
         )
             
     def execute(self):
-        """Executa as transformações"""
+        """Executa as transformaões"""
         if self.df is None:
             messagebox.showwarning("Aviso", "Carregue um arquivo primeiro!")
             return
             
         output_file = self.output_entry.get()
         if not output_file:
-            messagebox.showwarning("Aviso", "Selecione um arquivo de saída!")
+            messagebox.showwarning("Aviso", "Selecione um arquivo de saçida!")
             return
         
         try:
@@ -539,7 +561,7 @@ class CSVTransformerTool(ctk.CTkFrame):
             
             result_df = self.df.copy()
             
-            # 1. Substituição DE-PARA
+            # 1. Substituião DE-PARA
             if self.enable_depara_var.get() and self.de_para_df is not None:
                 self.status_label.configure(text="Aplicando DE-PARA...")
                 self.progress_bar.set(0.3)
@@ -549,7 +571,7 @@ class CSVTransformerTool(ctk.CTkFrame):
                 col_de = self.de_column_var.get()
                 col_para = self.para_column_var.get()
                 
-                # Criar dicionário de substituição
+                # Criar dicionçario de substituião
                 de_para_dict = dict(zip(
                     self.de_para_df[col_de].astype(str),
                     self.de_para_df[col_para].astype(str)
@@ -568,9 +590,9 @@ class CSVTransformerTool(ctk.CTkFrame):
                 selected_cols = [col for col, var in self.column_vars.items() if var.get()]
                 result_df = result_df[selected_cols]
             
-            # 3. Transformações
+            # 3. Transformaões
             if self.enable_transform_var.get():
-                self.status_label.configure(text="Aplicando transformações...")
+                self.status_label.configure(text="Aplicando transformaões...")
                 self.progress_bar.set(0.7)
                 self.update()
                 
@@ -609,11 +631,11 @@ class CSVTransformerTool(ctk.CTkFrame):
             result_df.to_csv(output_file, sep=sep, index=False, encoding='utf-8')
             
             self.progress_bar.set(1.0)
-            self.status_label.configure(text=f"Concluído! {len(result_df)} linhas salvas.")
+            self.status_label.configure(text=f"Concluçido! {len(result_df)} linhas salvas.")
             
             messagebox.showinfo(
                 "Sucesso",
-                f"Transformação concluída!\n\n"
+                f"Transformaão concluçida!\n\n"
                 f"Linhas: {len(result_df)}\n"
                 f"Colunas: {len(result_df.columns)}\n"
                 f"Arquivo: {output_file}"
@@ -696,5 +718,41 @@ class CSVTransformerTool(ctk.CTkFrame):
                 self.get_settings()
             )
             messagebox.showinfo("Sucesso", f"Perfil '{profile_name}' salvo!")
+
+    def add_to_workflow(self):
+        """Adiciona a configuração atual como etapa do workflow"""
+        input_file = self.input_entry.get().strip()
+        output_file = self.output_entry.get().strip()
+        
+        if not input_file:
+            messagebox.showwarning(t("warning"), t("select_input_first"))
+            return
+            
+        if not output_file:
+            messagebox.showwarning(t("warning"), t("select_output_first"))
+            return
+            
+        # Perguntar se deve usar saída anterior
+        use_previous = False
+        if workflow_manager.get_step_count() > 0:
+            use_previous = messagebox.askyesno(
+                t("workflow"),
+                t("use_previous_output_question")
+            )
+            
+        # Adicionar ao workflow
+        workflow_manager.add_step(
+            tool_id="transformer",
+            tool_name="⚙️ " + t("tool_transformer"),
+            input_file=input_file if not use_previous else None,
+            output_file=output_file,
+            config=self.get_settings(),
+            use_previous_output=use_previous
+        )
+        
+        messagebox.showinfo(
+            t("success"),
+            f"{t('step_added_to_workflow')}\n{t('total_steps')}: {workflow_manager.get_step_count()}"
+        )
 
 
