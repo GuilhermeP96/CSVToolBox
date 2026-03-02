@@ -7,6 +7,9 @@ import os
 from pathlib import Path
 import chardet
 
+# PyAccelerate — thread pool
+from pyaccelerate.threads import submit as pa_submit
+
 # Importar workflow manager
 from tools.workflow_manager import workflow_manager
 
@@ -480,12 +483,18 @@ class CSVSplitterTool(ctk.CTkFrame):
             messagebox.showerror("Erro", "Número mçaximo de registros invçalido!")
             return
         
+        self.btn_execute.configure(state="disabled")
+        self.log_text.delete("1.0", "end")
+        self.status_label.configure(text="Lendo arquivo...")
+        self.progress_bar.set(0)
+        self.update()
+        
+        # Executa em thread via pyaccelerate pool
+        pa_submit(self._execute_split, input_file, output_dir, prefix, max_rows)
+    
+    def _execute_split(self, input_file, output_dir, prefix, max_rows):
+        """Executa a divisão em thread"""
         try:
-            self.btn_execute.configure(state="disabled")
-            self.log_text.delete("1.0", "end")
-            self.status_label.configure(text="Lendo arquivo...")
-            self.progress_bar.set(0)
-            self.update()
             
             # Ler arquivo
             sep = self.get_separator(self.sep_var)

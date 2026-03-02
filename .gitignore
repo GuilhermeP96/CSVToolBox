@@ -29,3 +29,4 @@ Thumbs.db
 *.log
 
 # Local config (user preferences are stored in Documents)
+config.json

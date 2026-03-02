@@ -9,6 +9,9 @@ import chardet
 import json
 import xml.etree.ElementTree as ET
 
+# PyAccelerate — thread pool
+from pyaccelerate.threads import submit as pa_submit
+
 # Importar workflow manager
 from tools.workflow_manager import workflow_manager
 
@@ -450,12 +453,17 @@ class CSVConverterTool(ctk.CTkFrame):
             messagebox.showwarning("Aviso", "Selecione um arquivo de saçida!")
             return
         
+        self.btn_execute.configure(state="disabled")
+        self.status_label.configure(text="Lendo arquivo de entrada...")
+        self.progress_bar.set(0.2)
+        self.update()
+        
+        # Executa em thread via pyaccelerate pool
+        pa_submit(self._execute_convert, input_file, output_file)
+    
+    def _execute_convert(self, input_file, output_file):
+        """Executa a conversão em thread"""
         try:
-            self.btn_execute.configure(state="disabled")
-            self.status_label.configure(text="Lendo arquivo de entrada...")
-            self.progress_bar.set(0.2)
-            self.update()
-            
             # Ler arquivo
             df = self.read_input_file(input_file)
             

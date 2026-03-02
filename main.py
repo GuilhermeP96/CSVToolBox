@@ -18,6 +18,12 @@ from datetime import datetime
 
 from PIL import Image
 
+# PyAccelerate — máximo desempenho e gerenciamento de pools
+
+from pyaccelerate import MaxMode
+
+from pyaccelerate.threads import shutdown_pools
+
 # Importar módulos de ferramentas
 
 from tools.csv_merger import CSVMergerTool
@@ -294,6 +300,16 @@ def get_app_config_path():
 
     return Path(os.path.dirname(os.path.abspath(__file__))) / "config.json"
 
+def get_example_config_path():
+
+    """Retorna o caminho do config.json.example não diretorio da aplicacao"""
+
+    if hasattr(sys, '_MEIPASS'):
+
+        return Path(os.path.dirname(sys.executable)) / "config.json.example"
+
+    return Path(os.path.dirname(os.path.abspath(__file__))) / "config.json.example"
+
 def get_temp_config_path():
 
     """Retorna o caminho do config.json em C:\\temp"""
@@ -370,7 +386,35 @@ def initialize_config():
 
         return
 
-    # 3. Criar config.json padrao em ambos os locais
+    # 3. Tentar gerar a partir do config.json.example
+
+    example_config = get_example_config_path()
+
+    if example_config.exists():
+
+        print(f"[Config] Gerando config.json a partir de: {example_config}")
+
+        try:
+
+            import shutil
+
+            shutil.copy2(example_config, app_config)
+
+            print(f"[Config] Criado: {app_config}")
+
+            shutil.copy2(example_config, temp_config)
+
+            print(f"[Config] Criado: {temp_config}")
+
+        except Exception as e:
+
+            print(f"[Config] Erro ao copiar config.json.example: {e}")
+
+        return
+
+
+
+    # 4. Criar config.json padrao em ambos os locais (fallback)
 
     print("[Config] Nenhum config.json encontrado. Criando configuracao padrao...")
 
@@ -1610,9 +1654,13 @@ class CSVToolBox(ctk.CTk):
 
 def main():
 
-    app = CSVToolBox()
+    with MaxMode():
 
-    app.mainloop()
+        app = CSVToolBox()
+
+        app.mainloop()
+
+    shutdown_pools()
 
 if __name__ == "__main__":
 

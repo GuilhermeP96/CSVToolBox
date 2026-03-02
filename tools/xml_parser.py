@@ -14,7 +14,7 @@ import os
 
 from pathlib import Path
 
-import threading
+from pyaccelerate.threads import submit as pa_submit
 
 
 
@@ -803,11 +803,11 @@ class XMLParserTool(ctk.CTkFrame):
 
         
 
-        # Executar em thread separada para não travar a UI
+        # Executar em thread via pyaccelerate pool
 
-        thread = threading.Thread(target=self._execute_conversion, args=(input_file, output_file))
+        self.btn_execute.configure(state="disabled")
 
-        thread.start()
+        pa_submit(self._execute_conversion, input_file, output_file)
 
         
 
@@ -816,8 +816,6 @@ class XMLParserTool(ctk.CTkFrame):
         """Executa a conversão (em thread)"""
 
         try:
-
-            self.btn_execute.configure(state="disabled")
 
             self.is_processing = True
 

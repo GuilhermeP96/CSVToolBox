@@ -30,6 +30,16 @@ from datetime import datetime
 
 
 
+# PyAccelerate — profiling, paralelismo e máximo desempenho
+
+from pyaccelerate.profiler import timed, timer
+
+from pyaccelerate.threads import map_parallel, shutdown_pools
+
+from pyaccelerate import MaxMode
+
+
+
 # Internationalization
 
 from i18n import t, get_language, set_language
@@ -144,9 +154,11 @@ def load_history():
 
 # ============================================================
 
+@timed(label="cli-merge")
+
 def cmd_merge(args):
 
-    """Merge multiple CSV files into one / Consolida mºltiplos arquivos CSV em um ºÚnico"""
+    """Merge multiple CSV files into one / Consolida múltiplos arquivos CSV em um único"""
 
     print(t("cli_merging").format(len(args.files)))
 
@@ -158,9 +170,7 @@ def cmd_merge(args):
 
     
 
-    dfs = []
-
-    for filepath in args.files:
+    def read_csv_file(filepath):
 
         if enc == 'auto':
 
@@ -170,13 +180,17 @@ def cmd_merge(args):
 
             file_enc = enc
 
-        
-
         print(t("cli_reading").format(filepath))
 
-        df = pd.read_csv(filepath, sep=sep, encoding=file_enc, low_memory=False)
+        return pd.read_csv(filepath, sep=sep, encoding=file_enc, low_memory=False)
 
-        dfs.append(df)
+    
+
+    # Lê CSVs em paralelo via pyaccelerate
+
+    items = [(f,) for f in args.files]
+
+    dfs = map_parallel(read_csv_file, items)
 
     
 
@@ -208,9 +222,9 @@ def cmd_merge(args):
 
 # ============================================================
 
-def cmd_split(args):
+@timed(label="cli-split")
 
-    """Split a large CSV into smaller parts / Divide um CSV grande em partes menores"""
+def cmd_split(args):
 
     print(t("cli_splitting").format(args.file))
 
@@ -272,9 +286,9 @@ def cmd_split(args):
 
 # ============================================================
 
-def cmd_clean(args):
+@timed(label="cli-clean")
 
-    """Clean CSV data / Limpa dados de um CSV"""
+def cmd_clean(args):
 
     print(t("cli_cleaning").format(args.file))
 
@@ -332,9 +346,9 @@ def cmd_clean(args):
 
 # ============================================================
 
-def cmd_convert(args):
+@timed(label="cli-convert")
 
-    """Convert between formats (CSV, XLSX, JSON) / Converte entre formatos"""
+def cmd_convert(args):
 
     print(t("cli_converting").format(args.file))
 
@@ -488,9 +502,9 @@ def cmd_transform(args):
 
 # ============================================================
 
-def cmd_info(args):
+@timed(label="cli-info")
 
-    """Show CSV file information / Mostra informaes sobre um arquivo CSV"""
+def cmd_info(args):
 
     print(t("cli_analyzing").format(args.file))
 
@@ -948,21 +962,25 @@ def main():
 
     
 
-    try:
+    with MaxMode():
 
-        commands[args.command](args)
+        try:
 
-    except FileNotFoundError as e:
+            commands[args.command](args)
 
-        print(t("cli_file_not_found").format(e.filename))
+        except FileNotFoundError as e:
 
-        sys.exit(1)
+            print(t("cli_file_not_found").format(e.filename))
 
-    except Exception as e:
+            sys.exit(1)
 
-        print(t("cli_error").format(e))
+        except Exception as e:
 
-        sys.exit(1)
+            print(t("cli_error").format(e))
+
+            sys.exit(1)
+
+    shutdown_pools()
 
 
 

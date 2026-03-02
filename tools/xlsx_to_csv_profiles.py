@@ -18,6 +18,9 @@ from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 import pandas as pd
 
+# PyAccelerate — thread pool
+from pyaccelerate.threads import submit as pa_submit
+
 # Tentar importar pyxlsb para suporte a .xlsb
 try:
     import pyxlsb
@@ -36,12 +39,23 @@ MONTH_MAP = {
 # ==================== FUNCOES DE CONFIG ====================
 
 def get_config_path():
-    """Retorna o caminho do config.json do CSVToolBox"""
+    """Retorna o caminho do config.json do CSVToolBox.
+    Se config.json nao existir mas config.json.example existir, gera automaticamente."""
     import sys
     if hasattr(sys, '_MEIPASS'):
-        # Running as compiled exe - usar diretorio do exe
-        return os.path.join(os.path.dirname(sys.executable), "config.json")
-    return os.path.join(os.path.dirname(os.path.dirname(__file__)), "config.json")
+        base = os.path.dirname(sys.executable)
+    else:
+        base = os.path.dirname(os.path.dirname(__file__))
+
+    config_path = os.path.join(base, "config.json")
+    example_path = os.path.join(base, "config.json.example")
+
+    if not os.path.exists(config_path) and os.path.exists(example_path):
+        import shutil
+        shutil.copy2(example_path, config_path)
+        print(f"[Config] config.json gerado a partir de {example_path}")
+
+    return config_path
 
 
 def get_temp_config_path():
@@ -791,13 +805,14 @@ class ExcelToCSVProfilesTool(ctk.CTkFrame):
         action_frame = ctk.CTkFrame(self, fg_color="transparent")
         action_frame.grid(row=4, column=0, padx=10, pady=10, sticky="ew")
         
-        ctk.CTkButton(
+        self.btn_convert = ctk.CTkButton(
             action_frame, 
             text="Converter", 
             font=("", 14, "bold"),
             height=40,
             command=self.execute_conversion
-        ).pack(side="left", padx=5)
+        )
+        self.btn_convert.pack(side="left", padx=5)
         
         ctk.CTkButton(
             action_frame,
@@ -1028,7 +1043,14 @@ class ExcelToCSVProfilesTool(ctk.CTkFrame):
         self.log_text.delete("1.0", "end")
         self.update()
         
+        # Executa em thread via pyaccelerate pool
+        self.btn_convert.configure(state="disabled")
+        pa_submit(self._execute_conversion, input_file, out_dir_path, config)
+    
+    def _execute_conversion(self, input_file, out_dir_path, config):
+        """Executa a conversao em thread"""
         try:
+            input_path = Path(input_file)
             self.log(f"{'='*50}")
             self.log(f"Iniciando conversao...")
             self.log(f"Arquivo: {input_file}")
@@ -1048,6 +1070,8 @@ class ExcelToCSVProfilesTool(ctk.CTkFrame):
             self.log(f"ERRO: {e}")
             self.status_label.configure(text="Erro!", text_color="red")
             messagebox.showerror("Erro", str(e))
+        finally:
+            self.btn_convert.configure(state="normal")
 
 
 class ProfileEditorWindow(ctk.CTkToplevel):

@@ -8,6 +8,9 @@ from pathlib import Path
 import chardet
 import re
 
+# PyAccelerate — thread pool
+from pyaccelerate.threads import submit as pa_submit
+
 # Importar workflow manager
 from tools.workflow_manager import workflow_manager
 
@@ -358,11 +361,17 @@ class CSVCleanerTool(ctk.CTkFrame):
             messagebox.showwarning("Aviso", "Selecione um arquivo de saçida!")
             return
         
+        self.btn_execute.configure(state="disabled")
+        self.status_label.configure(text="Lendo arquivo...")
+        self.progress_bar.set(0.1)
+        self.update()
+        
+        # Executa em thread via pyaccelerate pool
+        pa_submit(self._execute_clean_csv, input_file, output_file)
+    
+    def _execute_clean_csv(self, input_file, output_file):
+        """Executa a limpeza em thread"""
         try:
-            self.btn_execute.configure(state="disabled")
-            self.status_label.configure(text="Lendo arquivo...")
-            self.progress_bar.set(0.1)
-            self.update()
             
             sep = self.get_separator()
             

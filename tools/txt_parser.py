@@ -6,7 +6,9 @@ import pandas as pd
 import os
 import re
 import chardet
-import threading
+
+# PyAccelerate — thread pool
+from pyaccelerate.threads import submit as pa_submit
 
 # Importar workflow manager
 from tools.workflow_manager import workflow_manager
@@ -457,13 +459,12 @@ class TxtParserTool(ctk.CTkFrame):
             messagebox.showwarning("Aviso", "Selecione um arquivo de saçida!")
             return
         
-        thread = threading.Thread(target=self._execute_convert, args=(input_file, output_file))
-        thread.start()
+        self.btn_execute.configure(state="disabled")
+        pa_submit(self._execute_convert, input_file, output_file)
         
     def _execute_convert(self, input_file, output_file):
         """Executa a conversão em thread"""
         try:
-            self.btn_execute.configure(state="disabled")
             self.status_label.configure(text="Lendo arquivo...")
             self.progress_bar.set(0.1)
             self.update()

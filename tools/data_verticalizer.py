@@ -8,8 +8,10 @@ import re
 import unicodedata
 import chardet
 from pathlib import Path
-import threading
 from datetime import datetime
+
+# PyAccelerate — thread pool
+from pyaccelerate.threads import submit as pa_submit
 
 # Importar workflow manager
 from tools.workflow_manager import workflow_manager
@@ -396,8 +398,9 @@ class DataVerticalizerTool(ctk.CTkFrame):
             messagebox.showwarning(t("warning"), t("select_output_first"))
             return
             
-        # Executar em thread separada
-        threading.Thread(target=self._execute_processing, args=(output_path,), daemon=True).start()
+        # Executar em thread via pyaccelerate pool
+        self.btn_execute.configure(state="disabled")
+        pa_submit(self._execute_processing, output_path)
         
     def _execute_processing(self, output_path):
         """Executa o processamento em thread separada"""
@@ -429,6 +432,8 @@ class DataVerticalizerTool(ctk.CTkFrame):
         except Exception as e:
             self.log(f"❌ {t('error')}: {e}")
             self.after(0, lambda: messagebox.showerror(t("error"), str(e)))
+        finally:
+            self.btn_execute.configure(state="normal")
             
     def _apply_verticalization(self, df):
         """Aplica verticalização (unpivot)"""

@@ -5,9 +5,11 @@ from tkinter import filedialog, messagebox
 import pandas as pd
 import json
 import os
-import threading
 from pathlib import Path
 from datetime import datetime
+
+# PyAccelerate — thread pool
+from pyaccelerate.threads import submit as pa_submit
 
 # Importar gerenciador de workflow
 from tools.workflow_manager import workflow_manager
@@ -411,7 +413,7 @@ class WorkflowOrchestratorTool(ctk.CTkFrame):
         self.btn_stop.configure(state="normal")
         self.btn_run_all.configure(state="disabled")
         
-        threading.Thread(target=self._execute_all_steps, daemon=True).start()
+        pa_submit(self._execute_all_steps)
         
     def _execute_all_steps(self):
         """Executa todas as etapas em sequência"""

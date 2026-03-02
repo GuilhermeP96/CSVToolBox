@@ -1,0 +1,142 @@
+{
+    "profiles": {},
+    "recent_files": [],
+    "settings": {
+        "theme": "dark-blue",
+        "default_encoding": "utf-8",
+        "default_separator": ";",
+        "max_recent_files": 10
+    },
+    "excel": {
+        "engine": null,
+        "source_encoding": "cp1252"
+    },
+    "csv": {
+        "delimiter": ";",
+        "quotechar": "\"",
+        "quoting": "all",
+        "encoding": "utf-8",
+        "decimal": ".",
+        "include_header": true
+    },
+    "header": {
+        "normalize": true,
+        "case": "upper",
+        "space_to": "_",
+        "punct_as": "_",
+        "strip_accents": true,
+        "allowed": "A-Z0-9_",
+        "collapse_underscores": true,
+        "trim_underscores": true,
+        "deduplicate": true
+    },
+    "output": {
+        "date_format": "01/{month}/{year}"
+    },
+    "xlsx_profiles": {
+        "Exemplo_Modo_Direct": {
+            "name": "Exemplo_Modo_Direct",
+            "mode": "direct",
+            "excel": {
+                "sheet_name": "Dados",
+                "header_row": 0,
+                "columns": [
+                    "ID",
+                    "Nome",
+                    "Categoria",
+                    "Valor",
+                    "Data"
+                ],
+                "numeric_columns": [
+                    "Valor"
+                ],
+                "drop_rows": {
+                    "how": "all"
+                }
+            },
+            "csv": {
+                "filename": "exemplo_direct_output.csv"
+            },
+            "header": {
+                "mapping": {
+                    "ID": "ID",
+                    "Nome": "NOME",
+                    "Categoria": "CATEGORIA",
+                    "Valor": "VALOR",
+                    "Data": "DATA"
+                }
+            }
+        },
+        "Exemplo_Modo_Vertical_YYYY_MM": {
+            "name": "Exemplo_Modo_Vertical_YYYY_MM",
+            "mode": "vertical",
+            "excel": {
+                "sheet_name": "Relatorio_Mensal",
+                "header_row": 0,
+                "super_header_row": null,
+                "fixed_columns": [
+                    "Produto",
+                    "Categoria",
+                    "Regional"
+                ],
+                "period_pattern": "^\\d{4}\\.\\d{2}$",
+                "period_format": "YYYY.MM",
+                "exclude_columns_pattern": "^Total"
+            },
+            "csv": {
+                "filename": "exemplo_vertical_output.csv"
+            },
+            "header": {
+                "mapping": {
+                    "Produto": "PRODUTO",
+                    "Categoria": "CATEGORIA",
+                    "Regional": "REGIONAL",
+                    "ANO_MES": "ANO_MES",
+                    "QTD": "QUANTIDADE"
+                }
+            },
+            "output": {
+                "date_column_name": "ANO_MES",
+                "value_column_name": "QTD",
+                "type_column_name": null
+            }
+        },
+        "Exemplo_Modo_Vertical_MMM_YY": {
+            "name": "Exemplo_Modo_Vertical_MMM_YY",
+            "mode": "vertical",
+            "excel": {
+                "sheet_name": "Vendas",
+                "header_row": 1,
+                "super_header_row": 0,
+                "fixed_columns": [
+                    "Segmento",
+                    "Tipo",
+                    "Produto",
+                    "Indicador"
+                ],
+                "period_pattern": "^\\s*[a-zA-Z]{3}-\\d{2}\\s*$",
+                "period_format": "mmm-yy",
+                "exclude_columns_pattern": null
+            },
+            "csv": {
+                "filename": "exemplo_vendas_output.csv"
+            },
+            "header": {
+                "mapping": {
+                    "Segmento": "SEGMENTO",
+                    "Tipo": "TIPO",
+                    "Produto": "PRODUTO",
+                    "Indicador": "INDICADOR",
+                    "ANO_MES": "ANO_MES",
+                    "TIPO_PERIODO": "TIPO_PERIODO",
+                    "VALOR": "VALOR"
+                }
+            },
+            "output": {
+                "date_column_name": "ANO_MES",
+                "value_column_name": "VALOR",
+                "type_column_name": "TIPO_PERIODO"
+            }
+        }
+    }
+}

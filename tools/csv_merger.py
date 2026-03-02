@@ -7,6 +7,9 @@ import os
 from pathlib import Path
 import chardet
 
+# PyAccelerate — thread pool
+from pyaccelerate.threads import submit as pa_submit
+
 # Importar workflow manager
 from tools.workflow_manager import workflow_manager
 
@@ -341,11 +344,17 @@ class CSVMergerTool(ctk.CTkFrame):
             messagebox.showwarning("Aviso", "Selecione um arquivo de saçida!")
             return
         
+        self.btn_execute.configure(state="disabled")
+        self.status_label.configure(text="Processando...")
+        self.progress_bar.set(0)
+        self.update()
+        
+        # Executa em thread via pyaccelerate pool
+        pa_submit(self._execute_merge, output_file)
+    
+    def _execute_merge(self, output_file):
+        """Executa a consolidação em thread"""
         try:
-            self.btn_execute.configure(state="disabled")
-            self.status_label.configure(text="Processando...")
-            self.progress_bar.set(0)
-            self.update()
             
             dfs = []
             total = len(self.selected_files)

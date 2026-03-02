@@ -8,7 +8,9 @@ import re
 import unicodedata
 import chardet
 from pathlib import Path
-import threading
+
+# PyAccelerate — thread pool
+from pyaccelerate.threads import submit as pa_submit
 
 # Importar workflow manager
 from tools.workflow_manager import workflow_manager
@@ -450,13 +452,12 @@ class ColumnCleanerTool(ctk.CTkFrame):
             messagebox.showwarning("Aviso", "Selecione ao menos uma coluna para limpar!")
             return
         
-        thread = threading.Thread(target=self._execute_clean, args=(output_file, selected_cols))
-        thread.start()
+        self.btn_execute.configure(state="disabled")
+        pa_submit(self._execute_clean, output_file, selected_cols)
         
     def _execute_clean(self, output_file, selected_cols):
         """Executa a limpeza em thread"""
         try:
-            self.btn_execute.configure(state="disabled")
             self.status_label.configure(text="Processando...")
             self.progress_bar.set(0.1)
             self.update()

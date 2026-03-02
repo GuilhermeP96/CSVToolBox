@@ -118,6 +118,7 @@ Create automated workflows by chaining multiple tools:
 - 📁 **Multiple Formats**: CSV, XLSX, XLS, XLSB, XML, JSON, TXT
 - 🔍 **Auto-detection**: Encoding and separator detection
 - 🔀 **Workflow Automation**: Chain multiple tools into automated sequences
+- ⚡ **pyaccelerate**: High-performance threading, CPU/memory optimization, and profiling via [pyaccelerate](https://pypi.org/project/pyaccelerate/)
 
 ## Configuration
 
@@ -127,6 +128,12 @@ Settings and profiles are saved in:
 
 Workflows are saved in: `Documents\CSVToolBox\workflows\`
 
+### config.json
+
+The `config.json` file stores user-specific settings and xlsx conversion profiles. It is **not tracked by git** (listed in `.gitignore`).
+
+On first run, if `config.json` is missing, it is automatically generated from `config.json.example` (which **is** tracked in git).
+
 ## Structure
 
 ```
@@ -134,6 +141,7 @@ CSVToolBox/
 ├── main.py              # GUI application
 ├── cli.py               # Command line interface
 ├── i18n.py              # Internationalization
+├── config.json.example  # Default config template (tracked in git)
 ├── requirements.txt
 └── tools/
     ├── csv_merger.py
@@ -146,9 +154,9 @@ CSVToolBox/
     ├── xlsx_to_csv_profiles.py
     ├── column_cleaner.py
     ├── txt_parser.py
-    ├── data_verticalizer.py    # NEW
-    ├── workflow_manager.py      # NEW
-    ├── workflow_orchestrator.py # NEW
+    ├── data_verticalizer.py
+    ├── workflow_manager.py
+    ├── workflow_orchestrator.py
     └── profile_manager.py
 ```
 
@@ -160,6 +168,7 @@ CSVToolBox/
 - xlrd - Legacy Excel files (.xls)
 - pyxlsb - Binary Excel files (.xlsb)
 - chardet - Encoding detection
+- pyaccelerate - High-performance threading, profiling and CPU/memory optimization
 
 ## License
 
@@ -278,6 +287,7 @@ Crie fluxos de trabalho automatizados encadeando múltiplas ferramentas:
 - 📁 **Múltiplos Formatos**: CSV, XLSX, XLS, XLSB, XML, JSON, TXT
 - 🔍 **Auto-detecção**: Detecta encoding e separador automaticamente
 - 🔀 **Automação de Workflow**: Encadeie múltiplas ferramentas em sequências automatizadas
+- ⚡ **pyaccelerate**: Threading de alta performance, otimização de CPU/memória e profiling via [pyaccelerate](https://pypi.org/project/pyaccelerate/)
 
 ## Configuração
 
@@ -287,6 +297,12 @@ As configurações e perfis são salvos em:
 
 Workflows são salvos em: `Documentos\CSVToolBox\workflows\`
 
+### config.json
+
+O arquivo `config.json` armazena as configurações do usuário e perfis de conversão xlsx. Ele **não é rastreado pelo git** (listado no `.gitignore`).
+
+Na primeira execução, se o `config.json` não existir, ele é gerado automaticamente a partir do `config.json.example` (que **é** rastreado no git).
+
 ## Estrutura
 
 ```
@@ -294,6 +310,7 @@ CSVToolBox/
 ├── main.py              # Aplicação GUI
 ├── cli.py               # Interface de linha de comando
 ├── i18n.py              # Internacionalização
+├── config.json.example  # Template padrão de config (rastreado no git)
 ├── requirements.txt
 └── tools/
     ├── csv_merger.py
@@ -306,9 +323,9 @@ CSVToolBox/
     ├── xlsx_to_csv_profiles.py
     ├── column_cleaner.py
     ├── txt_parser.py
-    ├── data_verticalizer.py    # NOVO
-    ├── workflow_manager.py      # NOVO
-    ├── workflow_orchestrator.py # NOVO
+    ├── data_verticalizer.py
+    ├── workflow_manager.py
+    ├── workflow_orchestrator.py
     └── profile_manager.py
 ```
 
@@ -320,6 +337,7 @@ CSVToolBox/
 - xlrd - Arquivos Excel legados (.xls)
 - pyxlsb - Arquivos Excel binários (.xlsb)
 - chardet - Detecção de encoding
+- pyaccelerate - Threading de alta performance, profiling e otimização de CPU/memória
 
 ## Licença
 

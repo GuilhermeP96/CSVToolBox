@@ -8,7 +8,9 @@ import json
 import re
 import unicodedata
 from pathlib import Path
-import threading
+
+# PyAccelerate — thread pool
+from pyaccelerate.threads import submit as pa_submit
 
 # Importar workflow manager
 from tools.workflow_manager import workflow_manager
@@ -481,13 +483,12 @@ class ExcelToCSVTool(ctk.CTkFrame):
             messagebox.showwarning("Aviso", "Selecione um arquivo de saçida!")
             return
         
-        thread = threading.Thread(target=self._execute_conversion, args=(filepath, output_file))
-        thread.start()
+        self.btn_execute.configure(state="disabled")
+        pa_submit(self._execute_conversion, filepath, output_file)
         
     def _execute_conversion(self, filepath, output_file):
         """Executa a conversão em thread"""
         try:
-            self.btn_execute.configure(state="disabled")
             self.status_label.configure(text="Lendo arquivo Excel...")
             self.progress_bar.set(0.2)
             self.update()

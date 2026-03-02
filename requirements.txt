@@ -5,3 +5,4 @@ pyxlsb>=1.0.10
 xlrd>=2.0.1
 chardet>=5.0.0
 tqdm>=4.65.0
+pyaccelerate>=0.6.0
